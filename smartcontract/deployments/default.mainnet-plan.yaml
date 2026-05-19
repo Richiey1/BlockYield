@@ -11,7 +11,7 @@ plan:
         - contract-publish:
             contract-name: blockbet
             expected-sender: SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF
-            cost: 327808
+            cost: 157808
             path: contracts/blockbet.clar
             anchor-block-only: true
             clarity-version: 3
