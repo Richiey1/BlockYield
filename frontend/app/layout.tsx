@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     default: "BlockBet — Predict the Chain",
     template: "%s | BlockBet",
   },
+  other: {
+    "talentapp:project_verification": "97d883cdc7ea1ede55f79cdbd383c0b1c6eda74212c4305225a89ede1a0d4458d7ea1bed4a11b26c26dfac7d80df57436f0217a329abb99afda84218638f74ac"
+  },
   description:
     "Real-time on-chain prediction game. Stake STX on verifiable blockchain behavior and win proportionally from the pool.",
   keywords: ["Stacks", "Bitcoin", "Prediction Market", "Gaming", "BlockBet", "Blockchain", "L2", "DeFi"],
