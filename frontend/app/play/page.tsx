@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Activity, Zap, ShieldCheck, Wallet, ArrowRight, 
-  RefreshCw, TrendingUp, Cpu, Award, HelpCircle, History 
+  RefreshCw, TrendingUp, Cpu, Award, HelpCircle, History,
+  TrendingDown, Coins, Blocks, CheckCircle, Clock
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
@@ -101,7 +102,7 @@ export default function PlayDashboard() {
           tx_count: b.txs.length,
           size: b.size,
           fees: b.txs.reduce((acc: number, tx: any) => acc + parseInt(tx.fee_rate || "0"), 0) / 1e6, // Convert micro-STX to STX
-          timestamp: new Date(b.burn_block_time * 1000).toLocaleTimeString()
+          timestamp: new Date(b.burn_block_time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }));
         setBlocks(parsed);
       }
@@ -231,104 +232,161 @@ export default function PlayDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-mono selection:bg-orange-500 selection:text-black p-4 md:p-8">
-      {/* Background Grids */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none" />
-      <div className="fixed inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-zinc-900 pointer-events-none" />
+    <div className="min-h-screen bg-black text-zinc-150 font-sans selection:bg-orange-500 selection:text-black pb-16">
+      
+      {/* Dynamic Background Effects */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-orange-650/5 rounded-full filter blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-zinc-800/10 rounded-full filter blur-[150px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-8">
         
         {/* Navigation & Wallet Dashboard */}
-        <header className="flex flex-col md:flex-row justify-between items-center bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 backdrop-blur-xl gap-4">
+        <header className="flex flex-col md:flex-row justify-between items-center bg-zinc-900/40 border border-zinc-800/60 rounded-[32px] p-6 backdrop-blur-2xl gap-4 shadow-xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-center">
-              <Zap className="w-6 h-6 text-orange-500" />
-            </div>
+            <motion.div 
+              whileHover={{ rotate: 15 }}
+              className="w-12 h-12 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20"
+            >
+              <Zap className="w-6 h-6 text-black stroke-[2.5]" />
+            </motion.div>
             <div>
-              <h1 className="text-xl font-black uppercase tracking-widest italic">BLOCK<span className="text-orange-500">BET.</span></h1>
-              <p className="text-[9px] text-zinc-500 uppercase tracking-wider">Predictive On-Chain Terminal</p>
+              <h1 className="text-2xl font-extrabold tracking-tight uppercase bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+                BLOCK<span className="text-orange-500">BET</span>
+              </h1>
+              <p className="text-[10px] text-orange-500/80 font-black uppercase tracking-widest">Predictive On-Chain Engine</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {isConnected ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 bg-zinc-950/60 border border-zinc-800/80 px-5 py-2.5 rounded-2xl">
                 <div className="text-right">
-                  <p className="text-[10px] text-zinc-500 uppercase font-black">STX BALANCE</p>
-                  <p className="text-sm font-black text-orange-500">{stxBalance} STX</p>
+                  <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">BALANCE</p>
+                  <p className="text-sm font-extrabold text-orange-500">{stxBalance} STX</p>
                 </div>
-                <div className="bg-zinc-850 px-4 py-2 border border-zinc-800 rounded-2xl text-xs font-black uppercase tracking-widest text-zinc-300">
-                  {address?.substring(0, 5)}...{address?.substring(address.length - 4)}
+                <div className="w-[1px] h-6 bg-zinc-800" />
+                <div className="text-xs font-bold text-zinc-300">
+                  {address?.substring(0, 6)}...{address?.substring(address.length - 4)}
                 </div>
               </div>
             ) : (
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={connect}
-                className="bg-orange-500 hover:bg-orange-600 text-black font-black uppercase tracking-widest text-xs px-6 py-3 rounded-2xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)] flex items-center gap-2"
+                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-orange-500/10 flex items-center gap-2"
               >
-                <Wallet className="w-4 h-4" /> Connect Wallet
-              </button>
+                <Wallet className="w-4 h-4" /> Connect Stacks Wallet
+              </motion.button>
             )}
           </div>
         </header>
 
-        {/* Status Prompt */}
-        {statusMsg && (
-          <div className="bg-zinc-900/90 border-l-4 border-orange-500 p-4 rounded-xl text-xs text-orange-400 font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>⚡ {statusMsg}</span>
-            <button onClick={() => setStatusMsg("")} className="text-zinc-500 hover:text-white font-black">X</button>
-          </div>
-        )}
+        {/* Status Message Prompt */}
+        <AnimatePresence>
+          {statusMsg && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-zinc-900/90 border border-orange-500/30 p-4 rounded-2xl text-xs text-orange-400 font-semibold tracking-wide flex items-center justify-between shadow-lg shadow-orange-500/5"
+            >
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                </span>
+                <span>{statusMsg}</span>
+              </div>
+              <button onClick={() => setStatusMsg("")} className="text-zinc-500 hover:text-white font-extrabold px-2">✕</button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* LEFT: Live Block Analytics Feed */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 backdrop-blur-xl">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full filter blur-2xl pointer-events-none" />
+              
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-orange-500" />
-                  <h2 className="text-lg font-black uppercase tracking-wider">Live Stacks Analytics Feed</h2>
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                    <Activity className="w-5 h-5 text-orange-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-extrabold text-white tracking-wide">Recent Blocks Analytics</h2>
+                    <p className="text-[10px] text-zinc-500">Real-time Stacks L2 blockchain activity metrics</p>
+                  </div>
                 </div>
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={fetchRecentBlocks} 
-                  className={`p-2 rounded-xl bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 transition-all ${isLoadingBlocks ? "animate-spin" : ""}`}
+                  className={`p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:bg-zinc-800 transition-all ${isLoadingBlocks ? "animate-spin" : ""}`}
                 >
                   <RefreshCw className="w-4 h-4 text-zinc-400" />
-                </button>
+                </motion.button>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-500 uppercase tracking-widest">
-                      <th className="pb-3 font-black">Block Height</th>
-                      <th className="pb-3 font-black">Transactions</th>
-                      <th className="pb-3 font-black">Block Size</th>
-                      <th className="pb-3 font-black">Total Fees</th>
-                      <th className="pb-3 font-black text-right">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {blocks.map((block, idx) => (
-                      <tr key={idx} className="border-b border-zinc-800/40 hover:bg-zinc-800/20 transition-all">
-                        <td className="py-4 font-black text-orange-500">#{block.height}</td>
-                        <td className="py-4 font-black">{block.tx_count} Txs</td>
-                        <td className="py-4 font-bold text-zinc-400">{(block.size / 1024).toFixed(2)} KB</td>
-                        <td className="py-4 font-mono text-zinc-400">{block.fees.toFixed(6)} STX</td>
-                        <td className="py-4 text-right text-zinc-500">{block.timestamp}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Responsive Visual Block Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                {blocks.map((block, idx) => (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05 }}
+                    key={idx} 
+                    className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-orange-500/20 transition-all shadow-md group relative"
+                  >
+                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
+                      </span>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-black text-zinc-500 tracking-wider">BLOCK</p>
+                      <p className="text-sm font-extrabold text-orange-500 mt-0.5">#{block.height}</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-[9px] text-zinc-500 font-medium">Tx Count</p>
+                        <p className="text-xs font-bold text-zinc-200">{block.tx_count} Txs</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-zinc-500 font-medium">Block size</p>
+                        <p className="text-xs font-bold text-zinc-200">{(block.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-zinc-500 font-medium">Total Fees</p>
+                        <p className="text-xs font-bold text-zinc-200">{block.fees.toFixed(4)} STX</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-zinc-900 pt-2 flex items-center justify-between text-[8px] text-zinc-600 font-semibold uppercase">
+                      <span>TIME</span>
+                      <span>{block.timestamp}</span>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
 
-            {/* Prediction Ledger / "My Bets" */}
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 backdrop-blur-xl">
+            {/* My Prediction Ledger */}
+            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl shadow-xl">
               <div className="flex items-center gap-3 mb-6">
-                <History className="w-5 h-5 text-orange-500" />
-                <h2 className="text-lg font-black uppercase tracking-wider">My Prediction Ledger</h2>
+                <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                  <History className="w-5 h-5 text-orange-500" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-white tracking-wide">My Prediction Ledger</h2>
+                  <p className="text-[10px] text-zinc-500">View and claim won predictive pooled prizes</p>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -336,43 +394,55 @@ export default function PlayDashboard() {
                   const isWon = round.status === "resolved" && round.myStake?.prediction === round.outcome;
                   
                   return (
-                    <div key={idx} className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/80 border border-zinc-800 rounded-2xl p-5 gap-4">
-                      <div>
+                    <motion.div 
+                      layout
+                      key={idx} 
+                      className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/60 border border-zinc-800/60 rounded-2xl p-5 gap-4 hover:border-zinc-800 transition-all"
+                    >
+                      <div className="space-y-1">
                         <div className="flex items-center gap-3">
-                          <span className="text-xs font-black uppercase text-zinc-400">Round #{round.id}</span>
-                          <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-zinc-800 text-orange-400 border border-zinc-700">
+                          <span className="text-xs font-bold text-zinc-300">Round #{round.id}</span>
+                          <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-orange-400 tracking-wider">
                             {round.outcomeType}
                           </span>
                         </div>
-                        <p className="text-sm font-bold mt-1">Staked on target block: #{round.targetBlock}</p>
-                        <p className="text-xs text-zinc-500 mt-0.5">My Stake: <span className="text-zinc-300 font-bold">{round.myStake?.amount} STX</span> (Predicted Option: #{round.myStake?.prediction})</p>
+                        <p className="text-xs font-bold text-zinc-400 mt-1">
+                          Staked on target block <span className="text-white">#{round.targetBlock}</span>
+                        </p>
+                        <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+                          <span>My Stake: <span className="text-orange-500 font-extrabold">{round.myStake?.amount} STX</span></span>
+                          <span className="text-zinc-700">•</span>
+                          <span>Predicted outcome Option: <span className="text-zinc-300 font-extrabold">#{round.myStake?.prediction}</span></span>
+                        </div>
                       </div>
 
-                      <div>
+                      <div className="w-full md:w-auto flex justify-end">
                         {round.status === "open" ? (
-                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl">
-                            Pending Block
-                          </span>
+                          <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-zinc-500 bg-zinc-900/60 border border-zinc-850 px-4 py-2.5 rounded-xl">
+                            <Clock className="w-3.5 h-3.5" /> Pending Block
+                          </div>
                         ) : isWon ? (
                           round.hasClaimed ? (
-                            <span className="text-[10px] font-black uppercase tracking-widest text-green-500 bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-xl">
-                              Won & Claimed
-                            </span>
+                            <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-green-500 bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-xl">
+                              <CheckCircle className="w-3.5 h-3.5" /> Won & Claimed
+                            </div>
                           ) : (
-                            <button
+                            <motion.button
+                              whileHover={{ scale: 1.03 }}
+                              whileTap={{ scale: 0.97 }}
                               onClick={() => handleClaimPayout(round.id)}
-                              className="text-[10px] bg-green-500 hover:bg-green-600 text-black font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                              className="text-[10px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-black font-black uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all shadow-md shadow-green-500/20 flex items-center gap-2"
                             >
                               🏆 Claim STX Payout
-                            </button>
+                            </motion.button>
                           )
                         ) : (
-                          <span className="text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-xl">
+                          <div className="text-[10px] font-extrabold uppercase tracking-widest text-red-500 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl">
                             Unsuccessful
-                          </span>
+                          </div>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -380,63 +450,66 @@ export default function PlayDashboard() {
           </div>
 
           {/* RIGHT: Live Staking Panel */}
-          <div className="space-y-6">
-            <div className="bg-zinc-900/60 border border-orange-500/20 rounded-3xl p-6 backdrop-blur-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <Cpu className="w-16 h-16 text-orange-500" />
-              </div>
+          <div className="space-y-8">
+            <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-orange-500/10 rounded-3xl p-6 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/5 rounded-full filter blur-xl pointer-events-none" />
 
-              <div className="flex items-center gap-3 mb-6 border-b border-zinc-800 pb-4">
+              <div className="flex items-center gap-3 mb-6 border-b border-zinc-800/80 pb-4">
                 <Cpu className="w-5 h-5 text-orange-500" />
-                <h2 className="text-md font-black uppercase tracking-widest">Prediction Terminal</h2>
+                <h2 className="text-sm font-extrabold text-white uppercase tracking-wider">Prediction Terminal</h2>
               </div>
 
               <div className="space-y-6">
                 
                 {/* Round Selector */}
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-black uppercase tracking-widest block mb-2">Select Active Round</label>
+                  <label className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider block mb-2.5">Select Active Round</label>
                   <div className="grid grid-cols-2 gap-2">
                     {rounds.filter(r => r.status === "open").map((r, i) => (
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         key={i}
                         onClick={() => {
                           setSelectedRound(r.id);
                           setPredictionVal(null);
                         }}
-                        className={`p-3 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all ${selectedRound === r.id ? "bg-orange-500/10 border-orange-500 text-orange-500" : "bg-zinc-950/40 border-zinc-800 hover:border-zinc-700 text-zinc-400"}`}
+                        className={`p-3.5 rounded-2xl border text-xs font-extrabold tracking-wide transition-all ${selectedRound === r.id ? "bg-orange-500/10 border-orange-500 text-orange-400 shadow-md shadow-orange-500/5" : "bg-zinc-950/60 border-zinc-800/60 hover:border-zinc-700 text-zinc-400"}`}
                       >
-                        Round #{r.id} ({r.outcomeType})
-                      </button>
+                        Round #{r.id}
+                        <span className="block text-[8px] text-zinc-500 mt-0.5 uppercase font-medium">{r.outcomeType}</span>
+                      </motion.button>
                     ))}
                   </div>
                 </div>
 
                 {/* Prediction Options */}
                 <div>
-                  <label className="text-[10px] text-zinc-500 font-black uppercase tracking-widest block mb-2">Choose Prediction</label>
-                  <div className="space-y-2">
+                  <label className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider block mb-2.5">Choose Outcome Selection</label>
+                  <div className="space-y-2.5">
                     {rounds[selectedRound]?.options.map((opt, i) => (
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
                         key={i}
                         onClick={() => setPredictionVal(opt.value)}
-                        className={`w-full p-4 rounded-2xl border text-xs font-bold text-left transition-all flex items-center justify-between ${predictionVal === opt.value ? "bg-orange-500/10 border-orange-500 text-orange-500" : "bg-zinc-950/40 border-zinc-800 hover:border-zinc-700 text-zinc-300"}`}
+                        className={`w-full p-4 rounded-2xl border text-xs font-semibold text-left transition-all flex items-center justify-between ${predictionVal === opt.value ? "bg-orange-500/10 border-orange-500 text-orange-400 shadow-md" : "bg-zinc-950/60 border-zinc-800/60 hover:border-zinc-700 text-zinc-300"}`}
                       >
                         <span>{opt.label}</span>
-                        {predictionVal === opt.value && <div className="w-2.5 h-2.5 bg-orange-500 rounded-full" />}
-                      </button>
+                        {predictionVal === opt.value && <div className="w-2.5 h-2.5 bg-orange-500 rounded-full shadow-lg shadow-orange-500" />}
+                      </motion.button>
                     ))}
                   </div>
                 </div>
 
                 {/* Stake Input */}
                 <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Stake Amount (STX)</label>
+                  <div className="flex justify-between items-center mb-2.5">
+                    <label className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Stake Amount (STX)</label>
                     {isConnected && (
                       <button 
                         onClick={handleMax}
-                        className="text-[9px] font-black uppercase text-orange-500 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded"
+                        className="text-[9px] font-black uppercase text-orange-500 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-lg hover:bg-orange-500/20 transition-all"
                       >
                         MAX
                       </button>
@@ -446,12 +519,12 @@ export default function PlayDashboard() {
                     <input
                       type="number"
                       step="0.0001"
-                      placeholder="Amount STX"
+                      placeholder="Enter STX Amount"
                       value={stakeAmount}
                       onChange={(e) => setStakeAmount(e.target.value)}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-4 text-xs text-zinc-200 placeholder-zinc-650 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-4 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                     />
-                    <div className="mt-2 text-[9px] text-zinc-500 text-right font-black">
+                    <div className="mt-2.5 text-[10px] text-zinc-500 text-right font-bold tracking-wide">
                       {stakeAmount && !isNaN(parseFloat(stakeAmount))
                         ? `≈ ${(parseFloat(stakeAmount) * 1e6).toLocaleString()} micro-STX`
                         : "0 micro-STX"}
@@ -459,27 +532,41 @@ export default function PlayDashboard() {
                   </div>
                 </div>
 
-                {/* Submit action */}
-                <button
+                {/* Place stake button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={handlePlaceStake}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black font-black uppercase tracking-widest py-4 px-6 rounded-2xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.15)] flex items-center justify-center gap-3 text-xs"
+                  className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black uppercase tracking-widest py-4 px-6 rounded-2xl transition-all shadow-lg shadow-orange-500/15 flex items-center justify-center gap-3 text-xs"
                 >
-                  Confirm Prediction Stake <ArrowRight className="w-4 h-4" />
-                </button>
+                  Place Prediction Stake <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </motion.button>
               </div>
             </div>
 
             {/* Quick Rules */}
-            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6">
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl">
               <div className="flex items-center gap-2 mb-4">
                 <HelpCircle className="w-4 h-4 text-orange-500/60" />
-                <h3 className="text-xs font-black uppercase text-zinc-400">Prediction Protocol</h3>
+                <h3 className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">Prediction Protocol</h3>
               </div>
-              <ul className="space-y-2 text-[10px] text-zinc-500 leading-relaxed">
-                <li>1. Choose an active round targeting a future Stacks block height.</li>
-                <li>2. Stake STX on your prediction outcome. Stakes are held in the contract.</li>
-                <li>3. When the block height is reached, the automated resolver submits the outcome.</li>
-                <li>4. Proportional pool shares are instantly claimable by winners (2% protocol fee).</li>
+              <ul className="space-y-3 text-[11px] text-zinc-500 leading-relaxed font-medium">
+                <li className="flex gap-2">
+                  <span className="text-orange-500 font-extrabold">1.</span>
+                  <span>Choose an active prediction round targeting a future block height.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-orange-500 font-extrabold">2.</span>
+                  <span>Stake STX backing your selected outcome directly to the on-chain contract.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-orange-500 font-extrabold">3.</span>
+                  <span>Upon block finalization, the resolution bot updates the verified block metrics.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-orange-500 font-extrabold">4.</span>
+                  <span>Winners claim their proportional share of the stake pool directly.</span>
+                </li>
               </ul>
             </div>
           </div>
