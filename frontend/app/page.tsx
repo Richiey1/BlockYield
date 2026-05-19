@@ -14,9 +14,9 @@ import { useStacks } from "@/contexts/StacksProvider";
 export default function Home() {
   const { isConnected, connect } = useStacks();
   
-  // Sidebar states (expanded by default on desktop)
-  const [leftExpanded, setLeftExpanded] = useState(true);
-  const [rightExpanded, setRightExpanded] = useState(true);
+  // Sidebar states (collapsed by default)
+  const [leftExpanded, setLeftExpanded] = useState(false);
+  const [rightExpanded, setRightExpanded] = useState(false);
 
   const [stats] = useState({
     rounds: 184,
@@ -116,14 +116,19 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 onClick={() => setLeftExpanded(true)}
-                className="flex-1 flex flex-col items-center justify-center py-8 cursor-pointer select-none group"
+                className="flex-1 flex flex-col items-center justify-center py-8 cursor-pointer select-none group px-2"
               >
-                <div className="h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 mb-6">
+                <div className="h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 mb-8">
                   <Info className="w-4 h-4 text-orange-500" />
                 </div>
-                <span className="writing-mode-vertical text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-orange-500 transition-colors uppercase whitespace-nowrap">
-                  Architecture Info
-                </span>
+                <div 
+                  style={{ writingMode: "vertical-rl" }} 
+                  className="uppercase tracking-[0.2em] text-[9px] font-black text-center whitespace-nowrap select-none rotate-180"
+                >
+                  <span className="text-orange-500">Architecture</span>
+                  <span className="text-zinc-600 mx-2 select-none">—</span>
+                  <span className="text-zinc-500 group-hover:text-zinc-300 transition-colors">How Predict-To-Earn Works</span>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -276,14 +281,19 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 onClick={() => setRightExpanded(true)}
-                className="flex-1 flex flex-col items-center justify-center py-8 cursor-pointer select-none group"
+                className="flex-1 flex flex-col items-center justify-center py-8 cursor-pointer select-none group px-2"
               >
-                <div className="h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 mb-6">
+                <div className="h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 mb-8">
                   <Layers className="w-4 h-4 text-orange-500" />
                 </div>
-                <span className="writing-mode-vertical text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-orange-500 transition-colors uppercase whitespace-nowrap">
-                  Supported Game Modes
-                </span>
+                <div 
+                  style={{ writingMode: "vertical-rl" }} 
+                  className="uppercase tracking-[0.2em] text-[9px] font-black text-center whitespace-nowrap select-none rotate-180"
+                >
+                  <span className="text-orange-500">Supported Operations</span>
+                  <span className="text-zinc-650 mx-2 select-none">—</span>
+                  <span className="text-zinc-500 group-hover:text-zinc-300 transition-colors">Interactive Game Modes</span>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
