@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { 
@@ -18,12 +18,59 @@ export default function Home() {
   const [leftExpanded, setLeftExpanded] = useState(false);
   const [rightExpanded, setRightExpanded] = useState(false);
 
-  const [stats] = useState({
-    rounds: 184,
-    totalStaked: "64.2k STX",
-    activePlayers: 142,
-    accuracy: "74%"
+  const [stats, setStats] = useState({
+    rounds: "...",
+    totalStaked: "...",
+    activePlayers: "...",
+    currentBlock: "..."
   });
+
+  useEffect(() => {
+    async function fetchLiveStats() {
+      try {
+        const contractPrincipal = "SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.blockbet";
+        
+        // 1. Fetch Contract STX Balance
+        const balRes = await fetch(`https://api.hiro.so/extended/v1/address/${contractPrincipal}/balances`);
+        const balData = await balRes.json();
+        const balance = balData.stx ? (parseInt(balData.stx.balance) / 1e6).toFixed(2) : "0.00";
+
+        // 2. Fetch Contract Transactions & Total Count
+        const txRes = await fetch(`https://api.hiro.so/extended/v1/address/${contractPrincipal}/transactions?limit=50`);
+        const txData = await txRes.json();
+        const totalTxs = txData.total || 0;
+
+        // Calculate unique player addresses from tx senders
+        const uniqueSenders = new Set();
+        if (txData.results) {
+          txData.results.forEach((tx: any) => {
+            if (tx.sender_address) {
+              uniqueSenders.add(tx.sender_address);
+            }
+          });
+        }
+        const activePlayersCount = uniqueSenders.size;
+
+        // 3. Fetch latest Stacks block height
+        const blockRes = await fetch("https://api.hiro.so/extended/v1/block?limit=1");
+        const blockData = await blockRes.json();
+        const latestBlock = blockData.results && blockData.results[0] ? blockData.results[0].height : "...";
+
+        setStats({
+          rounds: String(totalTxs),
+          totalStaked: `${balance} STX`,
+          activePlayers: String(activePlayersCount),
+          currentBlock: String(latestBlock)
+        });
+      } catch (err) {
+        console.error("Failed to fetch live stats:", err);
+      }
+    }
+    
+    fetchLiveStats();
+    const interval = setInterval(fetchLiveStats, 30000); // refresh every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-zinc-150 font-sans selection:bg-orange-500 selection:text-black overflow-x-hidden flex flex-col justify-between">
@@ -180,10 +227,10 @@ export default function Home() {
           {/* Active Stats Grid */}
           <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-zinc-900">
             {[
-              { label: "Prediction Rounds", value: stats.rounds, icon: Activity, suffix: "+" },
+              { label: "Prediction Interactions", value: stats.rounds, icon: Activity, suffix: "" },
               { label: "Total STX Staked", value: stats.totalStaked, icon: BarChart3, suffix: "" },
               { label: "Active Players", value: stats.activePlayers, icon: TrendingUp, suffix: "" },
-              { label: "Avg Accuracy", value: stats.accuracy, icon: Trophy, suffix: "" },
+              { label: "Current Block Height", value: stats.currentBlock, icon: Trophy, suffix: "" },
             ].map((stat, i) => (
               <div key={i} className="p-4.5 rounded-2xl bg-zinc-900/20 border border-zinc-900 text-center">
                 <stat.icon className="w-4 h-4 text-orange-500/60 mx-auto mb-2" />
