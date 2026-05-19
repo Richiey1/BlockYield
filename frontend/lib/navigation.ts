@@ -4,8 +4,7 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { label: "Overview", href: "#overview" },
-  { label: "Transactions", href: "#transactions" },
-  { label: "Signers", href: "#signers" },
-  { label: "Docs", href: "#docs" },
+  { label: "Home", href: "/" },
+  { label: "Prediction Terminal", href: "/play" },
+  { label: "Explorer", href: "https://explorer.hiro.so?chain=mainnet" },
 ];
