@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "build": "next build --webpack --no-lint",
     "start": "next start",
     "lint": "eslint"
   },
@@ -19,6 +19,7 @@
     "@walletconnect/universal-provider": "^2.23.1",
     "clsx": "^2.1.1",
     "encoding": "^0.1.13",
+    "framer-motion": "^11.11.17",
     "lokijs": "^1.5.12",
     "lucide-react": "^0.562.0",
     "next": "16.0.8",
