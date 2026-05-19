@@ -113,14 +113,28 @@ export function CreateGameContent() {
             </div>
 
             <div>
-              <label htmlFor="betAmount" className="block text-sm sm:text-base font-pixel text-gray-300 mb-5 uppercase tracking-wider">
-                Stakes (STX)
-              </label>
+              <div className="flex justify-between items-center mb-5">
+                <label htmlFor="betAmount" className="block text-sm sm:text-base font-pixel text-gray-300 uppercase tracking-wider">
+                  Stakes (STX)
+                </label>
+                {balance !== null && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const maxStx = Math.max(0, balance - 0.05);
+                      setBetAmount(maxStx.toFixed(6));
+                    }}
+                    className="px-3 py-1 bg-orange-500/10 hover:bg-orange-500/20 border-2 border-orange-500/30 text-orange-400 font-pixel text-[10px] uppercase transition-all"
+                  >
+                    MAX (Gas Reserved)
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <input
                   id="betAmount"
                   type="number"
-                  step="0.01"
+                  step="0.000001"
                   value={betAmount}
                   onChange={(e) => setBetAmount(e.target.value)}
                   placeholder="0.00"
@@ -129,9 +143,16 @@ export function CreateGameContent() {
                 />
               </div>
               
-              <div className="mt-4 flex items-center gap-3 font-pixel text-xs text-gray-300 uppercase tracking-tight">
-                <Wallet className="w-4 h-4 text-orange-500" />
-                {loadingBalance ? "..." : balance !== null ? `Balance: ${formatStx(balance * 1_000_000)} STX` : "?"}
+              <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 font-pixel text-xs text-gray-300 uppercase tracking-tight">
+                <div className="flex items-center gap-3">
+                  <Wallet className="w-4 h-4 text-orange-500" />
+                  {loadingBalance ? "..." : balance !== null ? `Balance: ${formatStx(balance * 1_000_000)} STX` : "?"}
+                </div>
+                <div className="text-orange-500/70 font-semibold">
+                  {betAmount && !isNaN(parseFloat(betAmount))
+                    ? `≈ ${Math.floor(parseFloat(betAmount) * 1_000_000).toLocaleString()} micro-STX`
+                    : "0 micro-STX"}
+                </div>
               </div>
             </div>
 

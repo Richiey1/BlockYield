@@ -9,10 +9,10 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: stackstactoe-gammar
+            contract-name: blockbet
             expected-sender: SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF
             cost: 327808
-            path: contracts/stackstactoe.clar
+            path: contracts/blockbet.clar
             anchor-block-only: true
             clarity-version: 3
-      epoch: "3.3"
+      epoch: "3.0"
