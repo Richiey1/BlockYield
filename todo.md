@@ -1,7 +1,7 @@
 # 📝 BlockBet Development TODO
 
 > [!IMPORTANT]
-> This document tracks the pending tasks for the **BlockBet** project as it transitions to an on-chain behavioral prediction game.
+> This document tracks the remaining pending tasks for the **BlockBet** prediction protocol.
 
 ## 🚀 Phase 1: Core Protocol Development
 - [ ] **Automated Resolution Engine**: Build a bot or script that triggers `resolve-round` by fetching real-time block data from the Stacks API.
@@ -13,9 +13,6 @@
 - [ ] **Network Feed**: Integrate a real-time WebSocket or polling feed of Stacks block data to inform player decisions.
 - [ ] **Historical Performance**: Add a "My Bets" section to track previous predictions and rewards.
 
-## 🛠 Deployment & DevOps
-- [ ] **Vercel Deployment**: Set up automatic deployments for the new frontend.
-
 ## 🧪 Testing & Validation
-- [ ] **Unit Tests**: Refactor legacy StacksTacToe tests to cover the new prediction market logic.
+- [ ] **Unit Tests**: Refactor legacy StacksTacToe tests in `./tests` to cover the new prediction market logic.
 - [ ] **Load Testing**: Simulate high-frequency betting rounds to ensure contract gas efficiency.
