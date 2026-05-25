@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Space_Mono, Inter } from "next/font/google";
 import { StacksProvider } from "@/contexts/StacksProvider";
 import { Navbar } from "@/components/Navbar";
-import { Toaster } from "react-hot-toast";
+import { GameToaster } from "@/components/ui/Toast";
+import OnboardingTour from "@/components/onboarding/OnboardingTour";
 import { Providers } from "@/components/Providers";
 import { ReownProvider } from "@/contexts/ReownProvider";
 import "./globals.css";
@@ -15,25 +16,43 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://blockbet.vercel.app'),
+  metadataBase: new URL("https://blockbet.vercel.app"),
   title: {
     default: "BlockBet — Predict the Chain",
     template: "%s | BlockBet",
   },
   other: {
-    "talentapp:project_verification": "97d883cdc7ea1ede55f79cdbd383c0b1c6eda74212c4305225a89ede1a0d4458d7ea1bed4a11b26c26dfac7d80df57436f0217a329abb99afda84218638f74ac"
+    "talentapp:project_verification":
+      "97d883cdc7ea1ede55f79cdbd383c0b1c6eda74212c4305225a89ede1a0d4458d7ea1bed4a11b26c26dfac7d80df57436f0217a329abb99afda84218638f74ac",
   },
   description:
     "Real-time on-chain prediction game. Stake STX on verifiable blockchain behavior and win proportionally from the pool.",
-  keywords: ["Stacks", "Bitcoin", "Prediction Market", "Gaming", "BlockBet", "Blockchain", "L2", "DeFi"],
+  keywords: [
+    "Stacks",
+    "Bitcoin",
+    "Prediction Market",
+    "Gaming",
+    "BlockBet",
+    "Blockchain",
+    "L2",
+    "DeFi",
+  ],
   authors: [{ name: "BlockBet Protocol" }],
   creator: "BlockBet",
   openGraph: {
     title: "BlockBet — Predict the Chain",
-    description: "Stake STX on verifiable blockchain behavior and win proportionally from the pool.",
+    description:
+      "Stake STX on verifiable blockchain behavior and win proportionally from the pool.",
     type: "website",
     siteName: "BlockBet",
-    images: [{ url: "/blockbet-logo.png", width: 512, height: 512, alt: "BlockBet Logo" }],
+    images: [
+      {
+        url: "/blockbet-logo.png",
+        width: 512,
+        height: 512,
+        alt: "BlockBet Logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -68,17 +87,8 @@ export default function RootLayout({
             <StacksProvider>
               <Navbar />
               {children}
-              <Toaster position="top-right" 
-                toastOptions={{
-                  style: {
-                    borderRadius: '12px',
-                    border: '1px solid #F97316',
-                    background: '#000',
-                    color: '#fff',
-                    fontFamily: 'var(--font-inter)',
-                  }
-                }}
-              />
+              <OnboardingTour />
+              <GameToaster />
             </StacksProvider>
           </ReownProvider>
         </Providers>
