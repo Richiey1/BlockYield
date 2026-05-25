@@ -50,3 +50,8 @@ npm run dev
 ## 📜 License
 
 MIT
+
+
+---
+
+*Maintenance note: This repository is actively maintained.*

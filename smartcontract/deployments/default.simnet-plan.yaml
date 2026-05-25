@@ -32,5 +32,5 @@ plan:
             contract-name: blockbet
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/blockbet.clar
-            clarity-version: 3
-      epoch: "3.0"
+            clarity-version: 2
+      epoch: "2.5"
