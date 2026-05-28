@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import UniversalProvider from "@walletconnect/universal-provider";
 import { createAppKit, useAppKit } from "@reown/appkit/react";
+// @ts-ignore
 import { mainnet } from "@reown/appkit/networks";
 import { type AppKit } from "@reown/appkit";
 
