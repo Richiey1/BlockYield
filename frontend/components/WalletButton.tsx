@@ -85,9 +85,9 @@ export function WalletButton({ wallet }: Props) {
       <button
         type="button"
         disabled
-        className="btn-retro disabled:opacity-60"
+        className="px-5 py-2.5 bg-zinc-950/80 text-orange-500/50 border border-orange-500/20 rounded-xl flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase opacity-60"
       >
-        <span className="relative">LOADING...</span>
+        <span>LOADING...</span>
       </button>
     );
   }
@@ -98,9 +98,9 @@ export function WalletButton({ wallet }: Props) {
         type="button"
         onClick={handleConnect}
         disabled={!isReady}
-        className="btn-retro disabled:cursor-not-allowed disabled:opacity-60"
+        className="px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <span className="relative">{label}</span>
+        <span>{label}</span>
       </button>
     );
   }
@@ -111,37 +111,37 @@ export function WalletButton({ wallet }: Props) {
       <button
         type="button"
         onClick={toggleDropdown}
-        className="btn-retro flex items-center gap-2"
+        className="px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer"
       >
         <Wallet className="h-4 w-4" />
-        <span className="text-[10px] sm:text-xs">{label}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        <span className="text-xs">{label}</span>
+        <ChevronDown className={`w-4 h-4 transition-transform duration-250 ${isDropdownOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-black border-4 border-white shadow-xl z-50">
+        <div className="absolute right-0 mt-3 w-64 bg-zinc-950/95 border border-zinc-800 backdrop-blur-2xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(249,115,22,0.03)] overflow-hidden z-50 animate-fadeIn">
           {/* Wallet Address */}
-          <div className="px-4 py-3 border-b-2 border-white bg-gray-900">
+          <div className="px-4 py-3.5 border-b border-zinc-900 bg-zinc-900/10">
             <div className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-orange-500" />
-              <p className="text-[10px] font-pixel text-orange-500 break-all">{address}</p>
+              <Wallet className="w-4 h-4 text-orange-500 flex-shrink-0" />
+              <p className="text-[11px] font-mono font-medium text-orange-500 break-all">{address}</p>
             </div>
           </div>
 
           {/* Menu Items */}
-          <div className="py-2">
+          <div className="py-1">
             {/* Copy Address */}
             <button
               onClick={handleCopy}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-orange-500 hover:text-black transition-colors text-left group"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-900/60 transition-colors text-left group cursor-pointer"
             >
               {copied ? (
-                <Check className="w-4 h-4 group-hover:text-black text-green-400" />
+                <Check className="w-4 h-4 text-green-400" />
               ) : (
-                <Copy className="w-4 h-4 group-hover:text-black text-white" />
+                <Copy className="w-4 h-4 text-zinc-400 group-hover:text-orange-500 transition-colors" />
               )}
-              <span className="font-pixel text-[10px] uppercase text-white group-hover:text-black">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 group-hover:text-white transition-colors">
                 {copied ? "COPIED!" : "COPY ADDRESS"}
               </span>
             </button>
@@ -149,10 +149,10 @@ export function WalletButton({ wallet }: Props) {
             {/* Disconnect */}
             <button
               onClick={handleDisconnect}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500 hover:text-black transition-colors text-left group"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-900/60 transition-colors text-left group cursor-pointer border-t border-zinc-900/40"
             >
-              <LogOut className="w-4 h-4 group-hover:text-black text-red-500" />
-              <span className="font-pixel text-[10px] uppercase text-white group-hover:text-black">DISCONNECT</span>
+              <LogOut className="w-4 h-4 text-zinc-400 group-hover:text-red-500 transition-colors" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 group-hover:text-white transition-colors">DISCONNECT</span>
             </button>
           </div>
         </div>
