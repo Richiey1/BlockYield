@@ -8,9 +8,7 @@ import {
   BarChart3,
   TrendingUp,
   Activity,
-  ArrowRight,
   Wallet,
-  ShieldCheck,
   Trophy,
   Timer,
   Play,
@@ -20,10 +18,7 @@ import {
   DollarSign,
   ChevronLeft,
   ChevronRight,
-  Menu,
   Info,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
 import { StatSkeleton } from "@/components/ui/SkeletonLoaders";
@@ -121,9 +116,9 @@ export default function Home() {
       <div className="relative z-10 flex-1 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto px-4 lg:px-8 pt-24 pb-12 gap-6 min-h-[calc(100vh-140px)]">
         {/* ================= LEFT SIDEBAR: DETERMINISTIC ARCHITECTURE ================= */}
         <motion.aside
-          animate={{ 
-            width: isMobile ? "100%" : (leftExpanded ? "380px" : "64px"),
-            height: isMobile ? (leftExpanded ? "auto" : "70px") : "auto"
+          animate={{
+            width: isMobile ? "100%" : leftExpanded ? "380px" : "64px",
+            height: isMobile ? (leftExpanded ? "auto" : "70px") : "auto",
           }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className={`bg-zinc-950/80 border border-zinc-900 rounded-[32px] backdrop-blur-2xl overflow-hidden flex flex-col shadow-2xl relative shrink-0 min-h-0 lg:min-h-0 ${!leftExpanded && !isMobile ? "items-center" : ""}`}
@@ -135,9 +130,15 @@ export default function Home() {
             title={leftExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
           >
             {isMobile ? (
-              leftExpanded ? <ChevronLeft className="w-4 h-4 rotate-90" /> : <ChevronRight className="w-4 h-4 rotate-90" />
+              leftExpanded ? (
+                <ChevronLeft className="w-4 h-4 rotate-90" />
+              ) : (
+                <ChevronRight className="w-4 h-4 rotate-90" />
+              )
+            ) : leftExpanded ? (
+              <ChevronLeft className="w-4 h-4" />
             ) : (
-              leftExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4" />
             )}
           </button>
 
@@ -145,9 +146,17 @@ export default function Home() {
           <AnimatePresence mode="wait">
             {leftExpanded ? (
               <motion.div
-                initial={{ opacity: 0, y: isMobile ? -10 : 0, x: isMobile ? 0 : -20 }}
+                initial={{
+                  opacity: 0,
+                  y: isMobile ? -10 : 0,
+                  x: isMobile ? 0 : -20,
+                }}
                 animate={{ opacity: 1, y: 0, x: 0 }}
-                exit={{ opacity: 0, y: isMobile ? -10 : 0, x: isMobile ? 0 : -20 }}
+                exit={{
+                  opacity: 0,
+                  y: isMobile ? -10 : 0,
+                  x: isMobile ? 0 : -20,
+                }}
                 transition={{ duration: 0.2 }}
                 className="p-6 flex-1 flex flex-col justify-between"
               >
@@ -222,7 +231,9 @@ export default function Home() {
                 onClick={() => setLeftExpanded(true)}
                 className={`flex-1 flex ${isMobile ? "flex-row items-center justify-between px-6 py-4 w-full h-[70px]" : "flex-col items-center justify-center py-8 px-2 w-full"} cursor-pointer select-none group`}
               >
-                <div className={`${isMobile ? "mb-0 mr-4" : "mb-8"} h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 shrink-0`}>
+                <div
+                  className={`${isMobile ? "mb-0 mr-4" : "mb-8"} h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 shrink-0`}
+                >
                   <Info className="w-4.5 h-4.5 text-orange-500" />
                 </div>
                 {isMobile ? (
@@ -347,8 +358,8 @@ export default function Home() {
         {/* ================= RIGHT SIDEBAR: SUPPORTED OPERATIONS ================= */}
         <motion.aside
           animate={{
-            width: isMobile ? "100%" : (rightExpanded ? "380px" : "64px"),
-            height: isMobile ? (rightExpanded ? "auto" : "70px") : "auto"
+            width: isMobile ? "100%" : rightExpanded ? "380px" : "64px",
+            height: isMobile ? (rightExpanded ? "auto" : "70px") : "auto",
           }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className={`bg-zinc-950/80 border border-zinc-900 rounded-[32px] backdrop-blur-2xl overflow-hidden flex flex-col shadow-2xl relative shrink-0 min-h-0 lg:min-h-0 ${!rightExpanded && !isMobile ? "items-center" : ""}`}
@@ -360,9 +371,15 @@ export default function Home() {
             title={rightExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
           >
             {isMobile ? (
-              rightExpanded ? <ChevronRight className="w-4 h-4 rotate-90" /> : <ChevronLeft className="w-4 h-4 rotate-90" />
+              rightExpanded ? (
+                <ChevronRight className="w-4 h-4 rotate-90" />
+              ) : (
+                <ChevronLeft className="w-4 h-4 rotate-90" />
+              )
+            ) : rightExpanded ? (
+              <ChevronRight className="w-4 h-4" />
             ) : (
-              rightExpanded ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4" />
             )}
           </button>
 
@@ -370,9 +387,17 @@ export default function Home() {
           <AnimatePresence mode="wait">
             {rightExpanded ? (
               <motion.div
-                initial={{ opacity: 0, y: isMobile ? -10 : 0, x: isMobile ? 0 : 20 }}
+                initial={{
+                  opacity: 0,
+                  y: isMobile ? -10 : 0,
+                  x: isMobile ? 0 : 20,
+                }}
                 animate={{ opacity: 1, y: 0, x: 0 }}
-                exit={{ opacity: 0, y: isMobile ? -10 : 0, x: isMobile ? 0 : 20 }}
+                exit={{
+                  opacity: 0,
+                  y: isMobile ? -10 : 0,
+                  x: isMobile ? 0 : 20,
+                }}
                 transition={{ duration: 0.2 }}
                 className="p-6 flex-1 flex flex-col justify-between"
               >
@@ -412,68 +437,72 @@ export default function Home() {
                     ].map((mode, i) => (
                       <Link href="/play" key={i} className="block">
                         <div className="group p-4.5 rounded-2xl bg-zinc-900/20 border border-zinc-900 hover:border-orange-500/20 transition-all flex flex-col justify-between relative overflow-hidden h-[120px]">
-                           <div className="flex justify-between items-start">
-                             <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-                               <mode.icon className="w-4.5 h-4.5 text-orange-500" />
-                             </div>
-                             <div className="flex items-center gap-1">
-                               <Timer className="w-3 h-3 text-orange-500/60" />
-                               <span className="text-[8px] font-black text-orange-500/60 uppercase tracking-wider">
-                                 {mode.time}
-                               </span>
-                             </div>
-                           </div>
+                          <div className="flex justify-between items-start">
+                            <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                              <mode.icon className="w-4.5 h-4.5 text-orange-500" />
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Timer className="w-3 h-3 text-orange-500/60" />
+                              <span className="text-[8px] font-black text-orange-500/60 uppercase tracking-wider">
+                                {mode.time}
+                              </span>
+                            </div>
+                          </div>
 
-                           <div>
-                             <h4 className="text-xs font-extrabold text-white group-hover:text-orange-400 transition-colors uppercase italic">
-                               {mode.title}
-                             </h4>
-                             <p className="text-[9px] text-zinc-500 font-medium leading-relaxed mt-1 line-clamp-2">
-                               {mode.desc}
-                             </p>
-                           </div>
-                         </div>
-                       </Link>
-                     ))}
-                   </div>
-                 </div>
+                          <div>
+                            <h4 className="text-xs font-extrabold text-white group-hover:text-orange-400 transition-colors uppercase italic">
+                              {mode.title}
+                            </h4>
+                            <p className="text-[9px] text-zinc-500 font-medium leading-relaxed mt-1 line-clamp-2">
+                              {mode.desc}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
 
-                 <div className="mt-6 pt-4 border-t border-zinc-900 text-[9px] text-zinc-600 font-black uppercase tracking-wider text-right">
-                   Active Hiro block indexing feed
-                 </div>
-               </motion.div>
-             ) : (
-               /* Collapsed Tab */
-               <motion.div
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: 1 }}
-                 onClick={() => setRightExpanded(true)}
-                 className={`flex-1 flex ${isMobile ? "flex-row items-center justify-between px-6 py-4 w-full h-[70px]" : "flex-col items-center justify-center py-8 px-2 w-full"} cursor-pointer select-none group`}
-               >
-                 <div className={`${isMobile ? "mb-0 mr-4" : "mb-8"} h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 shrink-0`}>
-                   <Layers className="w-4 h-4 text-orange-500" />
-                 </div>
-                 {isMobile ? (
-                   <span className="text-[10px] font-black uppercase text-orange-500 tracking-[0.2em] flex-1 text-left">
-                     Supported Operations
-                   </span>
-                 ) : (
-                   <div
-                     style={{ writingMode: "vertical-rl" }}
-                     className="uppercase tracking-[0.2em] text-[9px] font-black text-center whitespace-nowrap select-none rotate-180"
-                   >
-                     <span className="text-orange-500">Supported Operations</span>
-                     <span className="text-zinc-650 mx-2 select-none">—</span>
-                     <span className="text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                       Interactive Game Modes
-                     </span>
-                   </div>
-                 )}
-                 {isMobile && <ChevronRight className="w-4 h-4 text-zinc-500" />}
-               </motion.div>
-             )}
-           </AnimatePresence>
-         </motion.aside>
+                <div className="mt-6 pt-4 border-t border-zinc-900 text-[9px] text-zinc-600 font-black uppercase tracking-wider text-right">
+                  Active Hiro block indexing feed
+                </div>
+              </motion.div>
+            ) : (
+              /* Collapsed Tab */
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                onClick={() => setRightExpanded(true)}
+                className={`flex-1 flex ${isMobile ? "flex-row items-center justify-between px-6 py-4 w-full h-[70px]" : "flex-col items-center justify-center py-8 px-2 w-full"} cursor-pointer select-none group`}
+              >
+                <div
+                  className={`${isMobile ? "mb-0 mr-4" : "mb-8"} h-8 w-8 bg-orange-500/10 rounded-xl flex items-center justify-center group-hover:bg-orange-500/20 transition-all border border-orange-500/20 shrink-0`}
+                >
+                  <Layers className="w-4 h-4 text-orange-500" />
+                </div>
+                {isMobile ? (
+                  <span className="text-[10px] font-black uppercase text-orange-500 tracking-[0.2em] flex-1 text-left">
+                    Supported Operations
+                  </span>
+                ) : (
+                  <div
+                    style={{ writingMode: "vertical-rl" }}
+                    className="uppercase tracking-[0.2em] text-[9px] font-black text-center whitespace-nowrap select-none rotate-180"
+                  >
+                    <span className="text-orange-500">
+                      Supported Operations
+                    </span>
+                    <span className="text-zinc-650 mx-2 select-none">—</span>
+                    <span className="text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                      Interactive Game Modes
+                    </span>
+                  </div>
+                )}
+                {isMobile && <ChevronRight className="w-4 h-4 text-zinc-500" />}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.aside>
       </div>
 
       {/* Footer */}
