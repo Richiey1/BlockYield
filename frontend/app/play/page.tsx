@@ -405,7 +405,7 @@ export default function PlayDashboard() {
             </motion.div>
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight uppercase bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-                BLOCK<span className="text-orange-500">BET</span>
+                BLOCK<span className="text-orange-500">YIELD</span>
               </h1>
               <p className="text-[10px] text-orange-500/80 font-black uppercase tracking-widest">Lossless Yield Tournament Engine</p>
             </div>

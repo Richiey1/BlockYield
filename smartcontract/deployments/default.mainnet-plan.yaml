@@ -9,10 +9,10 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: blockbet-beta
+            contract-name: blockyield
             expected-sender: SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF
             cost: 165808
-            path: contracts/blockbet.clar
+            path: contracts/blockyield.clar
             anchor-block-only: true
             clarity-version: 2
       epoch: "2.5"

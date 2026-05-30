@@ -49,7 +49,7 @@ export default function Home() {
     async function fetchLiveStats() {
       try {
         const contractPrincipal =
-          "SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.blockbet";
+          "SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.blockyield";
 
         // 1. Fetch Contract STX Balance
         const balRes = await fetch(

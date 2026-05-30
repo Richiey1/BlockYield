@@ -1,4 +1,4 @@
-;; BlockBet Lossless Yield-Backed Tournament & Competition Engine
+;; BlockYield Lossless Yield-Backed Tournament & Competition Engine
 ;; Overhauled from parity-betting game to Lossless PoX-simulated staking engine
 
 (define-constant ERR-NOT-AUTHORIZED (err u401))

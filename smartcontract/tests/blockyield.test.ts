@@ -6,8 +6,8 @@ const deployer = accounts.get("deployer")!;
 const alice = accounts.get("wallet_1")!;
 const bob = accounts.get("wallet_2")!;
 
-describe("BlockBet Lossless Yield Betting Engine", () => {
-  const CONTRACT_NAME = "blockbet";
+describe("BlockYield Lossless Yield Betting Engine", () => {
+  const CONTRACT_NAME = "blockyield";
 
   it("should execute the full lossless yield staking, virtual betting, and withdrawal loop", () => {
     // 1. Initial Deposit (10,000 STX = 10,000,000,000 micro-STX)
