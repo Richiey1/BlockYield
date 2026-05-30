@@ -29,8 +29,8 @@ plan:
     - id: 0
       transactions:
         - emulated-contract-publish:
-            contract-name: blockyield
+            contract-name: blockyields
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/blockyield.clar
+            path: contracts/blockyields.clar
             clarity-version: 2
       epoch: "2.5"
