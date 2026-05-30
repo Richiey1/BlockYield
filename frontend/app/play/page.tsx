@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Activity, Zap, ShieldCheck, Wallet, ArrowRight, 
   RefreshCw, Cpu, HelpCircle, History,
-  Coins, CheckCircle, Clock, Plus, Minus, ArrowDownRight
+  Coins, CheckCircle, Clock, Plus, Minus, ArrowDownRight,
+  AlertTriangle, Loader2
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
+import { useBlockYield } from "@/hooks/useBlockYield";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, PostConditionMode } from "@stacks/transactions";
@@ -37,9 +39,12 @@ interface PredictionRound {
 
 export default function PlayDashboard() {
   const { address, isConnected, connect } = useStacks();
-  const [stxBalance, setStxBalance] = useState("0.0000");
-  const [vaultPrincipal, setVaultPrincipal] = useState("0.0000");
-  const [yieldCredits, setYieldCredits] = useState("0.00000000");
+  const {
+    stxBalance, rawMicroStx, vaultPrincipal, yieldCredits,
+    isLoadingBalance, maxDepositSTX, maxRedeemCredits,
+    fetchBalance, setStxBalance, setVaultPrincipal, setYieldCredits,
+  } = useBlockYield();
+
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [isLoadingBlocks, setIsLoadingBlocks] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
@@ -49,10 +54,31 @@ export default function PlayDashboard() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [redeemAmount, setRedeemAmount] = useState("");
 
+  // Transaction Simulation State
+  const [simState, setSimState] = useState<"idle" | "simulating" | "broadcasting" | "confirmed">("idle");
+  const [simAction, setSimAction] = useState<"deposit" | "withdraw" | "redeem" | "bet">("deposit");
+  const [simAmount, setSimAmount] = useState("");
+  const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null);
+  
+  // Smart Validation
+  const depositMicro = BigInt(Math.floor(parseFloat(depositAmount || "0") * 1e6));
+  const exceedsDeposit = depositMicro > rawMicroStx && rawMicroStx > BigInt(0);
+  const exceedsWithdraw = parseFloat(withdrawAmount || "0") > parseFloat(vaultPrincipal);
+  const exceedsRedeem = parseFloat(redeemAmount || "0") > parseFloat(yieldCredits);
+
   // Betting state
   const [selectedRound, setSelectedRound] = useState<number>(154210);
   const [predictionVal, setPredictionVal] = useState<number | null>(null);
   const [stakeAmount, setStakeAmount] = useState("");
+  const exceedsBet = parseFloat(stakeAmount || "0") > parseFloat(yieldCredits);
+  
+  // Open simulation modal before executing a tx
+  function openSim(action: "deposit" | "withdraw" | "redeem" | "bet", amount: string, fn: () => Promise<void>) {
+    setSimAction(action);
+    setSimAmount(amount);
+    setPendingAction(() => fn);
+    setSimState("simulating");
+  }
   
   // Interactive prediction rounds matching the on-chain parity contract structure
   const [rounds, setRounds] = useState<PredictionRound[]>([
@@ -97,23 +123,7 @@ export default function PlayDashboard() {
     }
   ]);
 
-  // Real-time compounding visual ticking yield counter
-  useEffect(() => {
-    if (!isConnected || parseFloat(vaultPrincipal) <= 0) return;
-    
-    // 5% APY compounding per block (roughly ~10 minutes, but we tick it every second virtually!)
-    // If vaultPrincipal is 1,000 STX, it earns 50 STX per year = ~0.00000158 STX per second.
-    const interval = setInterval(() => {
-      setYieldCredits(prev => {
-        const principal = parseFloat(vaultPrincipal) || 0;
-        const ratePerSecond = (principal * 0.05) / (365 * 24 * 3600); // 5% APY in seconds
-        const newYield = parseFloat(prev) + ratePerSecond;
-        return newYield.toFixed(8);
-      });
-    }, 1000);
-    
-    return () => clearInterval(interval);
-  }, [isConnected, vaultPrincipal]);
+  // Real-time compounding visual ticking yield counter — now handled by useBlockYield hook
 
   // Fetch recent Stacks blocks from Hiro API
   async function fetchRecentBlocks() {
@@ -167,26 +177,12 @@ export default function PlayDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (isConnected && address) {
-      fetchBalancesAndContractState(address);
-    }
-  }, [isConnected, address]);
+  // Balance fetching now handled by useBlockYield hook
 
   // Execute Deposit to Vault
-  async function handleDeposit() {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    if (!depositAmount || isNaN(parseFloat(depositAmount))) {
-      setStatusMsg("Error: Please enter a valid deposit amount.");
-      return;
-    }
-
+  async function execDeposit() {
     const microStx = Math.floor(parseFloat(depositAmount) * 1e6);
-    setStatusMsg("Broadcasting vault deposit transaction...");
-
+    setSimState("broadcasting");
     try {
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
@@ -196,38 +192,32 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Allow,
         anchorMode: 3,
         onFinish: (data) => {
-          setStatusMsg(`Deposit broadcasted successfully! TxID: ${data.txId.substring(0, 16)}...`);
+          setSimState("confirmed");
+          setStatusMsg(`Deposit broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
           setVaultPrincipal(prev => (parseFloat(prev) + parseFloat(depositAmount)).toFixed(4));
           setStxBalance(prev => (parseFloat(prev) - parseFloat(depositAmount)).toFixed(4));
           setDepositAmount("");
+          setTimeout(() => setSimState("idle"), 2000);
         },
-        onCancel: () => {
-          setStatusMsg("Transaction canceled.");
-        }
+        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
       });
     } catch (error: any) {
+      setSimState("idle");
       setStatusMsg(`Deposit error: ${error.message}`);
     }
   }
 
+  function handleDeposit() {
+    if (!isConnected) { connect(); return; }
+    if (!depositAmount || isNaN(parseFloat(depositAmount))) { setStatusMsg("Enter a valid deposit amount."); return; }
+    if (exceedsDeposit) { setStatusMsg("Insufficient wallet balance."); return; }
+    openSim("deposit", depositAmount, execDeposit);
+  }
+
   // Execute Withdraw Principal
-  async function handleWithdraw() {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    if (!withdrawAmount || isNaN(parseFloat(withdrawAmount))) {
-      setStatusMsg("Error: Please enter a valid withdrawal amount.");
-      return;
-    }
-    if (parseFloat(withdrawAmount) > parseFloat(vaultPrincipal)) {
-      setStatusMsg("Error: Withdrawal exceeds vault principal.");
-      return;
-    }
-
+  async function execWithdraw() {
     const microStx = Math.floor(parseFloat(withdrawAmount) * 1e6);
-    setStatusMsg("Broadcasting principal withdrawal transaction...");
-
+    setSimState("broadcasting");
     try {
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
@@ -237,38 +227,32 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Allow,
         anchorMode: 3,
         onFinish: (data) => {
-          setStatusMsg(`Withdrawal broadcasted successfully! TxID: ${data.txId.substring(0, 16)}...`);
+          setSimState("confirmed");
+          setStatusMsg(`Withdrawal broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
           setVaultPrincipal(prev => (parseFloat(prev) - parseFloat(withdrawAmount)).toFixed(4));
           setStxBalance(prev => (parseFloat(prev) + parseFloat(withdrawAmount)).toFixed(4));
           setWithdrawAmount("");
+          setTimeout(() => setSimState("idle"), 2000);
         },
-        onCancel: () => {
-          setStatusMsg("Transaction canceled.");
-        }
+        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
       });
     } catch (error: any) {
+      setSimState("idle");
       setStatusMsg(`Withdrawal error: ${error.message}`);
     }
   }
 
+  function handleWithdraw() {
+    if (!isConnected) { connect(); return; }
+    if (!withdrawAmount || isNaN(parseFloat(withdrawAmount))) { setStatusMsg("Enter a valid withdrawal amount."); return; }
+    if (exceedsWithdraw) { setStatusMsg("Withdrawal exceeds vault principal."); return; }
+    openSim("withdraw", withdrawAmount, execWithdraw);
+  }
+
   // Execute Yield Credits Redemption
-  async function handleRedeemYield() {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    if (!redeemAmount || isNaN(parseFloat(redeemAmount))) {
-      setStatusMsg("Error: Please enter a valid yield amount.");
-      return;
-    }
-    if (parseFloat(redeemAmount) > parseFloat(yieldCredits)) {
-      setStatusMsg("Error: Redemption exceeds accumulated yield credits.");
-      return;
-    }
-
+  async function execRedeemYield() {
     const microStx = Math.floor(parseFloat(redeemAmount) * 1e6);
-    setStatusMsg("Broadcasting yield credit redemption transaction...");
-
+    setSimState("broadcasting");
     try {
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
@@ -278,76 +262,67 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Allow,
         anchorMode: 3,
         onFinish: (data) => {
-          setStatusMsg(`Yield redeemed successfully! TxID: ${data.txId.substring(0, 16)}...`);
+          setSimState("confirmed");
+          setStatusMsg(`Yield redeemed! TxID: ${data.txId.substring(0, 16)}...`);
           setYieldCredits(prev => (parseFloat(prev) - parseFloat(redeemAmount)).toFixed(8));
           setStxBalance(prev => (parseFloat(prev) + parseFloat(redeemAmount)).toFixed(4));
           setRedeemAmount("");
+          setTimeout(() => setSimState("idle"), 2000);
         },
-        onCancel: () => {
-          setStatusMsg("Transaction canceled.");
-        }
+        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
       });
     } catch (error: any) {
+      setSimState("idle");
       setStatusMsg(`Redemption error: ${error.message}`);
     }
   }
 
+  function handleRedeemYield() {
+    if (!isConnected) { connect(); return; }
+    if (!redeemAmount || isNaN(parseFloat(redeemAmount))) { setStatusMsg("Enter a valid yield amount."); return; }
+    if (exceedsRedeem) { setStatusMsg("Redemption exceeds accumulated yield credits."); return; }
+    openSim("redeem", redeemAmount, execRedeemYield);
+  }
+
   // Execute Place Yield Bet
-  async function handlePlaceStake() {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    if (predictionVal === null) {
-      setStatusMsg("Error: Please select a prediction option.");
-      return;
-    }
-    if (!stakeAmount || isNaN(parseFloat(stakeAmount))) {
-      setStatusMsg("Error: Please enter a valid wager amount.");
-      return;
-    }
-    if (parseFloat(stakeAmount) > parseFloat(yieldCredits)) {
-      setStatusMsg("Error: Wager amount exceeds available Yield Credits.");
-      return;
-    }
-
+  async function execPlaceStake() {
+    if (predictionVal === null) return;
     const microStx = Math.floor(parseFloat(stakeAmount) * 1e6);
-    setStatusMsg("Broadcasting lossless prediction wager...");
-
+    setSimState("broadcasting");
     try {
       await openContractCall({
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "place-yield-bet",
-        functionArgs: [
-          uintCV(selectedRound),
-          uintCV(microStx),
-          uintCV(predictionVal)
-        ],
+        functionArgs: [uintCV(selectedRound), uintCV(microStx), uintCV(predictionVal)],
         postConditionMode: PostConditionMode.Allow,
         anchorMode: 3,
         onFinish: (data) => {
-          setStatusMsg(`Wager broadcasted successfully! TxID: ${data.txId.substring(0, 16)}...`);
+          setSimState("confirmed");
+          setStatusMsg(`Wager broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
           setYieldCredits(prev => (parseFloat(prev) - parseFloat(stakeAmount)).toFixed(8));
           const updated = [...rounds];
           const round = updated.find(r => r.id === selectedRound);
-          if (round) {
-            round.myStake = {
-              amount: stakeAmount,
-              prediction: predictionVal
-            };
-          }
+          if (round) { round.myStake = { amount: stakeAmount, prediction: predictionVal }; }
           setRounds(updated);
           setStakeAmount("");
           setPredictionVal(null);
+          setTimeout(() => setSimState("idle"), 2000);
         },
-        onCancel: () => {
-          setStatusMsg("Transaction canceled.");
-        }
+        onCancel: () => { setSimState("idle"); setStatusMsg("Wager canceled."); }
       });
     } catch (error: any) {
+      setSimState("idle");
       setStatusMsg(`Bet error: ${error.message}`);
     }
+  }
+
+  function handlePlaceStake() {
+    if (!isConnected) { connect(); return; }
+    if (predictionVal === null) { setStatusMsg("Select a prediction option."); return; }
+    if (!stakeAmount || isNaN(parseFloat(stakeAmount))) { setStatusMsg("Enter a valid wager amount."); return; }
+    if (exceedsBet) { setStatusMsg("Wager exceeds available Yield Credits."); return; }
+    openSim("bet", stakeAmount, execPlaceStake);
   }
 
   // Execute Claim Won Yield
@@ -385,6 +360,7 @@ export default function PlayDashboard() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-black text-zinc-150 font-sans selection:bg-orange-500 selection:text-black pb-16">
       
       {/* Dynamic Background Effects */}
@@ -504,16 +480,25 @@ export default function PlayDashboard() {
                     <p className="text-[10px] text-zinc-500 leading-relaxed mt-1">Stash STX securely to compound risk-free yield.</p>
                   </div>
                   <div>
-                    <input 
-                      type="number"
-                      placeholder="Amount STX"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600"
-                    />
+                    <div className="relative">
+                      <input 
+                        type="number"
+                        placeholder="Amount STX"
+                        value={depositAmount}
+                        onChange={(e) => setDepositAmount(e.target.value)}
+                        className={`w-full bg-zinc-900 border ${exceedsDeposit ? "border-red-500/50" : "border-zinc-800"} rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600 pr-14`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setDepositAmount(maxDepositSTX)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-orange-500 hover:text-orange-400 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded-md"
+                      >MAX</button>
+                    </div>
+                    {exceedsDeposit && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Insufficient balance</p>}
                     <button 
                       onClick={handleDeposit}
-                      className="w-full mt-3 bg-gradient-to-r from-orange-500 to-amber-500 text-black font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md"
+                      disabled={exceedsDeposit}
+                      className="w-full mt-3 bg-gradient-to-r from-orange-500 to-amber-500 text-black font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md disabled:opacity-40"
                     >
                       Deposit STX
                     </button>
@@ -529,16 +514,25 @@ export default function PlayDashboard() {
                     <p className="text-[10px] text-zinc-500 leading-relaxed mt-1">Withdraw principal instantly. Always 100% safe.</p>
                   </div>
                   <div>
-                    <input 
-                      type="number"
-                      placeholder="Amount STX"
-                      value={withdrawAmount}
-                      onChange={(e) => setWithdrawAmount(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600"
-                    />
+                    <div className="relative">
+                      <input 
+                        type="number"
+                        placeholder="Amount STX"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                        className={`w-full bg-zinc-900 border ${exceedsWithdraw ? "border-red-500/50" : "border-zinc-800"} rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600 pr-14`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setWithdrawAmount(vaultPrincipal)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-orange-500 hover:text-orange-400 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded-md"
+                      >MAX</button>
+                    </div>
+                    {exceedsWithdraw && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Exceeds vault principal</p>}
                     <button 
                       onClick={handleWithdraw}
-                      className="w-full mt-3 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md"
+                      disabled={exceedsWithdraw}
+                      className="w-full mt-3 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md disabled:opacity-40"
                     >
                       Withdraw STX
                     </button>
@@ -554,16 +548,25 @@ export default function PlayDashboard() {
                     <p className="text-[10px] text-zinc-500 leading-relaxed mt-1">Convert earned yield/winnings to liquid STX.</p>
                   </div>
                   <div>
-                    <input 
-                      type="number"
-                      placeholder="Credits to STX"
-                      value={redeemAmount}
-                      onChange={(e) => setRedeemAmount(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600"
-                    />
+                    <div className="relative">
+                      <input 
+                        type="number"
+                        placeholder="Credits to STX"
+                        value={redeemAmount}
+                        onChange={(e) => setRedeemAmount(e.target.value)}
+                        className={`w-full bg-zinc-900 border ${exceedsRedeem ? "border-red-500/50" : "border-zinc-800"} rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-orange-500 transition-all placeholder-zinc-600 pr-14`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setRedeemAmount(maxRedeemCredits)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-green-400 hover:text-green-300 bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 rounded-md"
+                      >MAX</button>
+                    </div>
+                    {exceedsRedeem && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Exceeds available credits</p>}
                     <button 
                       onClick={handleRedeemYield}
-                      className="w-full mt-3 bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 text-green-400 font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md"
+                      disabled={exceedsRedeem}
+                      className="w-full mt-3 bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 text-green-400 font-black uppercase tracking-widest text-[9px] py-2.5 rounded-xl transition-all shadow-md disabled:opacity-40"
                     >
                       Redeem as STX
                     </button>
@@ -835,5 +838,82 @@ export default function PlayDashboard() {
         </div>
       </div>
     </div>
+
+    {/* Transaction Simulation Modal */}
+    <AnimatePresence>
+      {simState !== "idle" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="w-full max-w-md bg-zinc-900 border border-orange-500/20 rounded-3xl p-8 shadow-2xl"
+          >
+            <div className="flex flex-col items-center text-center">
+              {simState === "simulating" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6">
+                    <Activity className="w-8 h-8 text-orange-500 animate-pulse" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-white">Simulating Transaction</h2>
+                  <p className="text-sm text-zinc-400 mb-6">
+                    You are about to <span className="text-orange-400 font-bold capitalize">{simAction}</span>{" "}
+                    <span className="text-white font-bold">{simAmount} {simAction === "redeem" ? "Credits" : "STX"}</span>
+                  </p>
+                  <div className="w-full bg-zinc-950 rounded-xl p-4 mb-8 text-left space-y-3">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-zinc-500 uppercase font-bold tracking-wider">Action</span>
+                      <span className="text-white capitalize">{simAction}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-zinc-500 uppercase font-bold tracking-wider">Amount</span>
+                      <span className="text-white">{simAmount} {simAction === "redeem" ? "Credits" : "STX"}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-zinc-500 uppercase font-bold tracking-wider">Est. Fee</span>
+                      <span className="text-white">~0.002 STX</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 w-full">
+                    <button
+                      onClick={() => setSimState("idle")}
+                      className="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black uppercase tracking-widest transition-colors"
+                    >Cancel</button>
+                    <button
+                      onClick={async () => { if (pendingAction) await pendingAction(); }}
+                      className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-black text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-500/20"
+                    >Sign & Confirm</button>
+                  </div>
+                </>
+              )}
+              {simState === "broadcasting" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6">
+                    <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-white">Broadcasting</h2>
+                  <p className="text-sm text-zinc-400">Awaiting wallet signature and submitting to Stacks network...</p>
+                </>
+              )}
+              {simState === "confirmed" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
+                    <CheckCircle className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-green-400">Confirmed!</h2>
+                  <p className="text-sm text-zinc-400">Your transaction was broadcast to the Stacks network.</p>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </>
   );
 }
