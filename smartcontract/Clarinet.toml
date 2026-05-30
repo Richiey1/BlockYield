@@ -1,6 +1,6 @@
 [project]
-name = 'BlockBet'
-description = 'Real-time on-chain prediction game on Stacks blockchain'
+name = 'BlockYield'
+description = 'Decentralized Lossless Yield-Backed Tournament Engine on Stacks'
 authors = []
 telemetry = true
 cache_dir = './.cache'

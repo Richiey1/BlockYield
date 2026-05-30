@@ -1,76 +1,40 @@
-# 📘 BlockBet — Predict the Chain, Not the Market
+# 📘 BlockYield — Lossless Yield-Backed Tournament Engine
 
 ## 🧠 One-Liner
 
-A real-time on-chain prediction game where players stake BTC (or sBTC) on verifiable blockchain outcomes and win based on correct predictions.
+A decentralized, Stacks-native prediction and competition engine where players stash STX safely to compound yield, and wager virtual yield credits on live blockchain outcomes.
 
 ---
 
 ## 🎯 Vision
 
-Transform blockchain activity into an interactive, decision-driven game where users don’t just observe the chain — they predict it, act on it, and earn from it.
-
-BlockBet turns on-chain data into a playable financial primitive.
+Transform passive blockchain capital into active, decision-driven engagement. Users earn boosted yields through skill-based on-chain predictions without ever risking their underlying principal.
 
 ---
 
 ## 🚨 Problem
 
-Current crypto interactions are:
-
-- Passive (holding, staking)
-- Abstract (complex DeFi mechanics)
-- Detached from real-time blockchain behavior
-
-Prediction markets exist, but:
-
-- Focus mostly on price speculation
-- Require off-chain data/oracles
-- Lack immediacy and simplicity
+Traditional prediction games are risky:
+- Users lose their hard-earned principal.
+- Volatility creates massive friction.
+- Passive staking is secure but lacks interactive engagement.
 
 ---
 
-## 💡 Core Concept
+## 💡 Core Concept: BlockYield Lossless Loop
 
-Players stake BTC (or sBTC) on short-term, verifiable blockchain outcomes such as:
-
-- Block characteristics (size, transaction count)
-- Transaction activity
-- DeFi interactions
-- Short-term volatility
-
----
-
-## ⚡ Core Gameplay Loop (10–15 seconds)
-
-1. User selects a prediction
-2. Stakes a small amount (e.g. 0.0001 BTC)
-3. Waits for resolution (1–5 minutes)
-4. Smart contract resolves outcome
-5. Winners claim pooled rewards
+Instead of simple direct wagering, BlockYield turns PoX staking into an interactive tournament layer:
+1. **STX Principal Vault**: Stash STX securely inside the on-chain vault adapter. Principal is always 100% protected and withdrawable at any block height.
+2. **Accrue Stacking Yield**: Your principal simulated PoX staking compounding rate (~5% APY) generates virtual **Yield Credits** ("Yield Ammo") block-by-block.
+3. **Lossless Prediction Tournaments**: Wager virtual yield credits on blockchain outcomes (e.g. block timestamp parity). 
+4. **Jackpot Multipliers**: Winners claim the pooled wagers in yield credits (boosting their effective Stacking APY exponentially) and redeem them for liquid STX. Losers lose nothing but virtual yield credits!
 
 ---
 
 ## 🔐 Smart Contract Architecture (Stacks / Clarity)
 
-### 1. `prediction-market.clar`
-- Create prediction rounds
-- Define conditions
-- Manage pools
-
-### 2. `stake-manager.clar`
-- Accept and track user stakes
-- Assign to outcomes
-
-### 3. `resolver-engine.clar`
-- Pulls/verifies outcome data
-- Finalizes results
-- Distributes rewards
-
----
-
-## 🎮 Game Modes
-
-1. **Block Pulse**: Predict block size or tx count.
-2. **Activity Watch**: Predict contract interactions.
-3. **Volatility Shot**: Short-term price movement.
+### 1. `blockyield.clar`
+- **Vault Stash Engine**: Controls `deposit-stx` and `withdraw-stx` principal custody.
+- **Accrual Module**: Automatically tracks compounding yield credits linear block-by-block progression.
+- **Tournament Pool Manager**: Governs virtual wagers and proportional splits.
+- **Oracle Resolution**: Resolves block metrics directly from on-chain block header timestamps.
