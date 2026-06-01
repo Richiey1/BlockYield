@@ -1,8 +1,8 @@
-# 📘 BlockBet — Product Requirements Document (PRD)
+# 📘 BlockYield — Product Requirements Document (PRD)
 
 ## 🟠 Product Name
 
-BlockBet
+BlockYield
 
 A real-time on-chain prediction game where players stake STX on verifiable blockchain outcomes and win based on correct predictions.
 
@@ -41,7 +41,7 @@ A smart contract system that creates "prediction pools" for specific on-chain ev
 ## 🏗️ Technical Architecture
 
 ### Smart Contracts (Clarity)
-- `blockbet.clar`: Handles the lifecycle of prediction rounds and staking.
+- `blockyields.clar`: Handles the lifecycle of prediction rounds and staking.
 
 ---
 

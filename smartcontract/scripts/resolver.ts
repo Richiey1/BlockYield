@@ -12,7 +12,7 @@ import { StacksMainnet, StacksTestnet } from "@stacks/network";
 // Configuration settings
 const STACKS_API_URL = process.env.STACKS_API_URL || "https://api.hiro.so";
 const DEPLOYER_ADDRESS = process.env.DEPLOYER_ADDRESS || "SP3TXKY0REKG6P3W6ACFB615N5556EC8VYS4MFA4D";
-const CONTRACT_NAME = "blockbet";
+const CONTRACT_NAME = "blockyields";
 const ADMIN_PRIVATE_KEY = process.env.ADMIN_PRIVATE_KEY || ""; // Set this in environment vars
 
 const network = process.env.NETWORK === "mainnet" ? new StacksMainnet() : new StacksTestnet();
@@ -100,7 +100,7 @@ async function resolveRound(roundId: number, outcome: number) {
 // Core Execution loop
 async function runResolver() {
   console.log("-----------------------------------------");
-  console.log("Starting BlockBet Automated Resolution Engine");
+  console.log("Starting BlockYield Automated Resolution Engine");
   console.log(`Polling API: ${STACKS_API_URL}`);
   console.log(`Target Contract: ${DEPLOYER_ADDRESS}.${CONTRACT_NAME}`);
   console.log("-----------------------------------------");

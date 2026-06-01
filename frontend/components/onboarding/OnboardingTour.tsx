@@ -6,7 +6,7 @@ import { X, ChevronRight, Gamepad2, TrendingUp, Wallet2 } from "lucide-react";
 
 const slides = [
   {
-    title: "Welcome to BlockBet",
+    title: "Welcome to BlockYield",
     description: "The first on-chain prediction game where you bet on real-time blockchain events.",
     icon: <Gamepad2 className="w-10 h-10 text-orange-500" />,
     color: "from-orange-500/10 to-transparent",
@@ -30,7 +30,7 @@ export default function OnboardingTour() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem("blockbet_tour_seen");
+    const hasSeenTour = localStorage.getItem("blockyield_tour_seen");
     if (!hasSeenTour) {
       setIsOpen(true);
     }
@@ -38,7 +38,7 @@ export default function OnboardingTour() {
 
   const handleClose = () => {
     setIsOpen(false);
-    localStorage.setItem("blockbet_tour_seen", "true");
+    localStorage.setItem("blockyield_tour_seen", "true");
   };
 
   const nextSlide = () => {

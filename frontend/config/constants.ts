@@ -1,8 +1,8 @@
 // Contract configuration
 export const STACKS_NETWORK = 'mainnet'; // 'mainnet' or 'testnet'
 export const CONTRACT_ADDRESS = 'SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF';
-export const CONTRACT_NAME = 'blockbet';
+export const CONTRACT_NAME = 'blockyields';
 export const CONTRACT_FULL_NAME = `${CONTRACT_ADDRESS}.${CONTRACT_NAME}`;
 
-export const APP_NAME = 'BlockBet';
+export const APP_NAME = 'BlockYield';
 export const APP_ICON = '/logo.svg';

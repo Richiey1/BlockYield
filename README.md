@@ -1,14 +1,14 @@
-# 🟠 BlockBet
+# 🟠 BlockYield
 
 **Predict the Chain, Not the Market**
 
-BlockBet is a real-time on-chain prediction game built on Stacks. It allows users to stake STX on verifiable blockchain outcomes — such as block size, transaction count, and network activity — with automatic resolution and trustless reward distribution.
+BlockYield is a real-time on-chain prediction game built on Stacks. It allows users to stake STX on verifiable blockchain outcomes — such as block size, transaction count, and network activity — with automatic resolution and trustless reward distribution.
 
 ---
 
 ## ⚡ Vision
 
-Transforming passive blockchain observation into an interactive financial experience. BlockBet turns the "heartbeat" of the Stacks network into a playable, deterministic game.
+Transforming passive blockchain observation into an interactive financial experience. BlockYield turns the "heartbeat" of the Stacks network into a playable, deterministic game.
 
 ## ⚙️ Core Mechanics
 

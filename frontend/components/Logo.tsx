@@ -5,12 +5,12 @@ export function Logo() {
     <Link
       href="/"
       className="group flex items-center gap-3 text-sm font-black tracking-tight text-white uppercase italic"
-      aria-label="BlockBet home"
+      aria-label="BlockYield home"
     >
       <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
         <img 
-          src="/blockbet-logo.png" 
-          alt="BlockBet Logo" 
+          src="/blockyield-logo.png" 
+          alt="BlockYield Logo" 
           className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(249,115,22,0.4)]" 
         />
       </div>

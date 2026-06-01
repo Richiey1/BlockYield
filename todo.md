@@ -1,7 +1,7 @@
-# 📝 BlockBet Development TODO
+# 📝 BlockYield Development TODO
 
 > [!IMPORTANT]
-> This document tracks the remaining pending tasks for the **BlockBet** prediction protocol.
+> This document tracks the remaining pending tasks for the **BlockYield** prediction protocol.
 
 
 ## 🧪 Testing & Validation
