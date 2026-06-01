@@ -63,15 +63,15 @@
     (let
         (
             (vault-data (default-to { principal-amount: u0, last-yield-block: block-height } (map-get? user-vault user)))
-            (principal (get principal-amount vault-data))
+            (curr-principal (get principal-amount vault-data))
             (last-block (get last-yield-block vault-data))
         )
-        (if (or (is-eq principal u0) (>= last-block block-height))
+        (if (or (is-eq curr-principal u0) (>= last-block block-height))
             u0
             (let
                 (
                     (blocks-elapsed (- block-height last-block))
-                    (accrued (/ (* (* principal blocks-elapsed) (var-get yield-rate-per-block)) (var-get yield-precision-scale)))
+                    (accrued (/ (* (* curr-principal blocks-elapsed) (var-get yield-rate-per-block)) (var-get yield-precision-scale)))
                 )
                 accrued
             )
@@ -245,7 +245,8 @@
                 
                 ;; Proportional share of the yield-credits pool: (user-stake * total-pool) / winning-pool
                 (raw-share (/ (* user-stake total-pool) winning-pool))
-                (platform-fee (/ (* raw-share (var-get platform-fee-percent)) u100))
+                (profit (if (> raw-share user-stake) (- raw-share user-stake) u0))
+                (platform-fee (/ (* profit (var-get platform-fee-percent)) u100))
                 (payout-amount (- raw-share platform-fee))
                 (admin-addr (var-get protocol-admin))
                 (current-credits (default-to u0 (map-get? user-yield-credits tx-sender)))
