@@ -12,7 +12,7 @@ import { useStacks } from "@/contexts/StacksProvider";
 import { useBlockYield } from "@/hooks/useBlockYield";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
-import { uintCV, PostConditionMode } from "@stacks/transactions";
+import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
 
 interface BlockData {
   height: number;
@@ -189,7 +189,10 @@ export default function PlayDashboard() {
         contractName: CONTRACT_NAME,
         functionName: "deposit-stx",
         functionArgs: [uintCV(microStx)],
-        postConditionMode: PostConditionMode.Allow,
+        postConditions: [
+          Pc.principal(address as string).willSendEq(microStx).ustx()
+        ],
+        postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
           setSimState("confirmed");
@@ -224,7 +227,7 @@ export default function PlayDashboard() {
         contractName: CONTRACT_NAME,
         functionName: "withdraw-stx",
         functionArgs: [uintCV(microStx)],
-        postConditionMode: PostConditionMode.Allow,
+        postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
           setSimState("confirmed");
@@ -259,7 +262,7 @@ export default function PlayDashboard() {
         contractName: CONTRACT_NAME,
         functionName: "redeem-yield-credits",
         functionArgs: [uintCV(microStx)],
-        postConditionMode: PostConditionMode.Allow,
+        postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
           setSimState("confirmed");
@@ -295,7 +298,7 @@ export default function PlayDashboard() {
         contractName: CONTRACT_NAME,
         functionName: "place-yield-bet",
         functionArgs: [uintCV(selectedRound), uintCV(microStx), uintCV(predictionVal)],
-        postConditionMode: PostConditionMode.Allow,
+        postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
           setSimState("confirmed");
@@ -338,7 +341,7 @@ export default function PlayDashboard() {
         contractName: CONTRACT_NAME,
         functionName: "claim-reward",
         functionArgs: [uintCV(roundId)],
-        postConditionMode: PostConditionMode.Allow,
+        postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
           setStatusMsg(`Jackpot claimed successfully! TxID: ${data.txId.substring(0, 16)}...`);
