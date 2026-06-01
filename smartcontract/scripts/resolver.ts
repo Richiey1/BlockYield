@@ -12,7 +12,7 @@ import { StacksMainnet, StacksTestnet } from "@stacks/network";
 // Configuration settings
 const STACKS_API_URL = process.env.STACKS_API_URL || "https://api.hiro.so";
 const DEPLOYER_ADDRESS = process.env.DEPLOYER_ADDRESS || "SP3TXKY0REKG6P3W6ACFB615N5556EC8VYS4MFA4D";
-const CONTRACT_NAME = "blockyields";
+const CONTRACT_NAME = "blockyields-v2";
 const ADMIN_PRIVATE_KEY = process.env.ADMIN_PRIVATE_KEY || ""; // Set this in environment vars
 
 const network = process.env.NETWORK === "mainnet" ? new StacksMainnet() : new StacksTestnet();

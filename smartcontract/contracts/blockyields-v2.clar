@@ -1,5 +1,5 @@
-;; BlockYields Lossless Yield-Backed Tournament & Competition Engine
-;; Overhauled from parity-betting game to Lossless PoX-simulated staking engine
+;; BlockYields V2 - Lossless Yield-Backed Tournament & Competition Engine
+;; V2: Fixed platform-fee bug (fee now applied only on profit) and reserved keyword clash (principal -> curr-principal)
 
 (define-constant ERR-NOT-AUTHORIZED (err u401))
 (define-constant ERR-INVALID-STAKE (err u402))

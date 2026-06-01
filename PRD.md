@@ -41,7 +41,7 @@ A smart contract system that creates "prediction pools" for specific on-chain ev
 ## 🏗️ Technical Architecture
 
 ### Smart Contracts (Clarity)
-- `blockyields.clar`: Handles the lifecycle of prediction rounds and staking.
+- `blockyields-v2.clar`: Handles the lifecycle of prediction rounds and staking.
 
 ---
 

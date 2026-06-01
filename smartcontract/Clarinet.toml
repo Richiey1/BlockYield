@@ -5,8 +5,9 @@ authors = []
 telemetry = true
 cache_dir = './.cache'
 
-[contracts.blockyields]
-path = 'contracts/blockyields.clar'
+
+[contracts.blockyields-v2]
+path = 'contracts/blockyields-v2.clar'
 clarity_version = 2
 epoch = '2.5'
 
