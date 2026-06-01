@@ -272,7 +272,7 @@ export default function Home() {
             >
               BLOCK
               <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-                BET.
+                YIELD.
               </span>
             </motion.h1>
 

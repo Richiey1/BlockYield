@@ -15,9 +15,9 @@ export function Logo() {
         />
       </div>
       <span className="leading-tight hidden sm:block">
-        <span className="block text-lg tracking-tighter">Block<span className="text-orange-500">Bet</span></span>
+        <span className="block text-lg tracking-tighter">Block<span className="text-orange-500">Yield</span></span>
         <span className="block text-[10px] font-black text-zinc-500 tracking-widest">
-          Predict the Chain
+          Lossless Yield Engine
         </span>
       </span>
     </Link>
