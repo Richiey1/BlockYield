@@ -16,7 +16,7 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://blockyield.vercel.app"),
+  metadataBase: new URL("https://block-bets.vercel.app"),
   title: {
     default: "BlockYield — Lossless Yield Tournament Engine",
     template: "%s | BlockYield",
@@ -57,7 +57,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "BlockYield — Lossless Yield Tournament Engine",
-    description: "Decentralized Lossless Yield-Backed Tournament Engine on Stacks L2.",
+    description:
+      "Decentralized Lossless Yield-Backed Tournament Engine on Stacks L2.",
     images: ["/blockyield-logo.png"],
   },
   icons: {

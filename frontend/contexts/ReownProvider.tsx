@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import UniversalProvider from "@walletconnect/universal-provider";
 import { createAppKit, useAppKit } from "@reown/appkit/react";
 // @ts-ignore
@@ -8,13 +14,16 @@ import { mainnet } from "@reown/appkit/networks";
 import { type AppKit } from "@reown/appkit";
 
 // 1. Get projectId from https://cloud.reown.com
-const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID_Fallback"; 
+const projectId =
+  process.env.NEXT_PUBLIC_REOWN_PROJECT_ID ||
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ||
+  "YOUR_PROJECT_ID_Fallback";
 
 // 2. Create a metadata object
 const metadata = {
   name: "StacksTacToe",
   description: "Decentralized Tic-Tac-Toe on Stacks",
-  url: "https://stackstactoe.vercel.app", // origin must match your domain & subdomain
+  url: "https://block-bets.vercel.app", // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
@@ -41,12 +50,12 @@ const stacksNetwork = {
 // 4. Create the AppKit instance
 // We use a universal adapter if available, or just standard init
 const modal = createAppKit({
-  adapters: [], 
+  adapters: [],
   networks: [mainnet],
   projectId,
   metadata,
   features: {
-    analytics: true, 
+    analytics: true,
   },
 });
 
@@ -91,16 +100,16 @@ export function ReownProvider({ children }: { children: ReactNode }) {
 
   // Hook into modal state events
   useEffect(() => {
-     // @ts-ignore - subscribeState types might be tricky with raw JS usage
-     const unsubscribe = modal.subscribeState((state: any) => {
-        if (state.selectedNetworkId) {
-            // Check provider session again
-            if (provider?.session) {
-                handleSession(provider.session);
-            }
+    // @ts-ignore - subscribeState types might be tricky with raw JS usage
+    const unsubscribe = modal.subscribeState((state: any) => {
+      if (state.selectedNetworkId) {
+        // Check provider session again
+        if (provider?.session) {
+          handleSession(provider.session);
         }
-     });
-     return () => unsubscribe();
+      }
+    });
+    return () => unsubscribe();
   }, [provider]);
 
   const handleSession = (session: any) => {
@@ -108,7 +117,7 @@ export function ReownProvider({ children }: { children: ReactNode }) {
     // Attempt to find Stacks address from namespaces
     // Usually Stacks is not in the default EVM namespaces, so we might need custom logic
     // For now, we will verify connection and later add Stacks address parsing
-    
+
     // Example: parsing session.namespaces if available
     // const stxNamespace = session.namespaces['stacks'];
     // if (stxNamespace && stxNamespace.accounts.length > 0) {
@@ -119,7 +128,7 @@ export function ReownProvider({ children }: { children: ReactNode }) {
 
   const disconnect = async () => {
     if (provider) {
-        await provider.disconnect();
+      await provider.disconnect();
     }
     await modal.disconnect();
     setIsConnected(false);
@@ -127,7 +136,7 @@ export function ReownProvider({ children }: { children: ReactNode }) {
   };
 
   const open = async () => {
-      await appKitOpen();
+    await appKitOpen();
   };
 
   return (
