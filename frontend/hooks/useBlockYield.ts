@@ -24,16 +24,9 @@ export function useBlockYield() {
         setRawMicroStx(micro);
         setStxBalance((Number(micro) / 1e6).toFixed(4));
       }
-      // Simulated vault state for initial UX
-      if (parseFloat(vaultPrincipal) === 0) {
-        setVaultPrincipal("1500.0000");
-        setYieldCredits("45.10543200");
-      }
     } catch {
-      setRawMicroStx(BigInt(1250 * 1e6));
-      setStxBalance("1250.0000");
-      setVaultPrincipal("1250.0000");
-      setYieldCredits("28.45210984");
+      setRawMicroStx(BigInt(0));
+      setStxBalance("0.0000");
     } finally {
       setIsLoadingBalance(false);
     }

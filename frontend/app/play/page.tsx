@@ -6,7 +6,7 @@ import {
   Activity, Zap, ShieldCheck, Wallet, ArrowRight, 
   RefreshCw, Cpu, HelpCircle, History,
   Coins, CheckCircle, Clock, Plus, Minus, ArrowDownRight,
-  AlertTriangle, Loader2
+  AlertTriangle, Loader2, ChevronDown, ChevronUp
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
 import { useBlockYield } from "@/hooks/useBlockYield";
@@ -48,6 +48,7 @@ export default function PlayDashboard() {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [isLoadingBlocks, setIsLoadingBlocks] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
+  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   
   // Staking Input States
   const [depositAmount, setDepositAmount] = useState("");
@@ -81,47 +82,7 @@ export default function PlayDashboard() {
   }
   
   // Interactive prediction rounds matching the on-chain parity contract structure
-  const [rounds, setRounds] = useState<PredictionRound[]>([
-    {
-      id: 154210,
-      targetBlock: 154210,
-      outcomeType: "parity",
-      status: "open",
-      totalPool: "4,500 Credits",
-      options: [
-        { label: "Even Timestamp Parity", value: 1 },
-        { label: "Odd Timestamp Parity", value: 2 },
-      ]
-    },
-    {
-      id: 154211,
-      targetBlock: 154211,
-      outcomeType: "parity",
-      status: "open",
-      totalPool: "2,850 Credits",
-      options: [
-        { label: "Even Timestamp Parity", value: 1 },
-        { label: "Odd Timestamp Parity", value: 2 },
-      ]
-    },
-    {
-      id: 154208,
-      targetBlock: 154208,
-      outcomeType: "parity",
-      status: "resolved",
-      totalPool: "9,200 Credits",
-      outcome: 1, // Even
-      myStake: {
-        amount: "150",
-        prediction: 1
-      },
-      hasClaimed: false,
-      options: [
-        { label: "Even Timestamp Parity", value: 1 },
-        { label: "Odd Timestamp Parity", value: 2 },
-      ]
-    }
-  ]);
+  const [rounds, setRounds] = useState<PredictionRound[]>([]);
 
   // Real-time compounding visual ticking yield counter — now handled by useBlockYield hook
 
@@ -148,28 +109,7 @@ export default function PlayDashboard() {
     }
   }
 
-  // Fetch Stacks Balance and Read Contract State
-  async function fetchBalancesAndContractState(userAddr: string) {
-    try {
-      // 1. Fetch STX wallet balance
-      const res = await fetch(`https://api.hiro.so/extended/v1/address/${userAddr}/balances`);
-      const data = await res.json();
-      if (data.stx) {
-        const bal = parseInt(data.stx.balance) / 1e6;
-        setStxBalance(bal.toFixed(4));
-      }
-
-      // Fallback/Simulated on local sandbox or initial load
-      if (parseFloat(vaultPrincipal) === 0) {
-        setVaultPrincipal("1500.0000");
-        setYieldCredits("45.10543200");
-      }
-    } catch (err) {
-      console.error("Failed to fetch balance or contract state:", err);
-      setVaultPrincipal("1250.0000");
-      setYieldCredits("28.45210984");
-    }
-  }
+  // Balance and contract state logic is fully handled by useBlockYield
 
   useEffect(() => {
     fetchRecentBlocks();
@@ -351,7 +291,7 @@ export default function PlayDashboard() {
             round.hasClaimed = true;
           }
           setRounds(updated);
-          if (address) fetchBalancesAndContractState(address);
+          if (address) fetchBalance();
         },
         onCancel: () => {
           setStatusMsg("Claim canceled.");
@@ -812,29 +752,47 @@ export default function PlayDashboard() {
             </div>
 
             {/* Quick Rules */}
-            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl">
-              <div className="flex items-center gap-2 mb-4">
-                <HelpCircle className="w-4 h-4 text-orange-500/60" />
-                <h3 className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">YieldBet Protocol</h3>
-              </div>
-              <ul className="space-y-3 text-[11px] text-zinc-500 leading-relaxed font-medium">
-                <li className="flex gap-2">
-                  <span className="text-orange-500 font-extrabold">1.</span>
-                  <span>Stake STX/sBTC into the lossless vault adapter contract. Principal is always withdrawable.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-orange-500 font-extrabold">2.</span>
-                  <span>Compounding PoX yields automatically mint virtual "Yield Credits" block-by-block.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-orange-500 font-extrabold">3.</span>
-                  <span>Deploy credits to predict target block timestamps. Unsuccessful bets forfeit credits, not principal.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-orange-500 font-extrabold">4.</span>
-                  <span>Claim winning pools directly, boosting your effective Stacking yield APY exponentially!</span>
-                </li>
-              </ul>
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl backdrop-blur-2xl overflow-hidden transition-all duration-300">
+              <button 
+                onClick={() => setIsHowItWorksOpen(!isHowItWorksOpen)}
+                className="w-full flex items-center justify-between p-6 cursor-pointer hover:bg-zinc-800/20 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4 text-orange-500/60" />
+                  <h3 className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">How It Works: YieldBet Protocol</h3>
+                </div>
+                {isHowItWorksOpen ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+              </button>
+              
+              <AnimatePresence>
+                {isHowItWorksOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ul className="px-6 pb-6 pt-2 space-y-4 text-[11px] text-zinc-500 leading-relaxed font-medium">
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">1.</span>
+                        <span><strong className="text-zinc-300">Stake STX/sBTC</strong> into the lossless vault adapter contract. Your principal is always safe and completely withdrawable at any time.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">2.</span>
+                        <span><strong className="text-zinc-300">Compounding Yield</strong> generates "Yield Credits" automatically for you, minted directly block-by-block based on Stacks PoX returns.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">3.</span>
+                        <span><strong className="text-zinc-300">Deploy credits</strong> to predict future outcomes like target block timestamps or parity. If you lose, you only forfeit credits, <i>not</i> your principal.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">4.</span>
+                        <span><strong className="text-zinc-300">Claim winning pools</strong> directly to massively boost your effective Stacking APY!</span>
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
