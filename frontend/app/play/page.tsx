@@ -322,12 +322,7 @@ export default function PlayDashboard() {
         {/* Navigation & Wallet Dashboard */}
         <header className="flex flex-col lg:flex-row justify-between items-center bg-zinc-900/40 border border-zinc-800/60 rounded-[32px] p-6 backdrop-blur-2xl gap-4 shadow-xl">
           <div className="flex items-center gap-4">
-            <motion.div 
-              whileHover={{ rotate: 15 }}
-              className="w-12 h-12 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20"
-            >
-              <Zap className="w-6 h-6 text-black stroke-[2.5]" />
-            </motion.div>
+
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight uppercase bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
                 BLOCK<span className="text-orange-500">YIELD</span>
