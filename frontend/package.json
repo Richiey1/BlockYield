@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "NEXT_DISABLE_ESLINT=1 next build",
+    "build": "NEXT_DISABLE_ESLINT=1 next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
