@@ -658,6 +658,51 @@ export default function PlayDashboard() {
 
           {/* RIGHT: Live Staking Panel */}
           <div className="space-y-8">
+            
+            {/* Quick Rules - Moved Above Terminal */}
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl backdrop-blur-2xl overflow-hidden transition-all duration-300">
+              <button 
+                onClick={() => setIsHowItWorksOpen(!isHowItWorksOpen)}
+                className="w-full flex items-center justify-between p-6 cursor-pointer hover:bg-zinc-800/20 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4 text-orange-500/60" />
+                  <h3 className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">How It Works: YieldBet Protocol</h3>
+                </div>
+                {isHowItWorksOpen ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+              </button>
+              
+              <AnimatePresence>
+                {isHowItWorksOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ul className="px-6 pb-6 pt-2 space-y-4 text-[11px] text-zinc-500 leading-relaxed font-medium">
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">1.</span>
+                        <span><strong className="text-zinc-300">Stake STX/sBTC</strong> into the lossless vault adapter contract. Your principal is always safe and completely withdrawable at any time.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">2.</span>
+                        <span><strong className="text-zinc-300">Compounding Yield</strong> generates "Yield Credits" automatically for you, minted directly block-by-block based on Stacks PoX returns.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">3.</span>
+                        <span><strong className="text-zinc-300">Deploy credits</strong> to predict future outcomes like target block timestamps or parity. If you lose, you only forfeit credits, <i>not</i> your principal.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-orange-500 font-extrabold text-sm shrink-0">4.</span>
+                        <span><strong className="text-zinc-300">Claim winning pools</strong> directly to massively boost your effective Stacking APY!</span>
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-orange-500/10 rounded-3xl p-6 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/5 rounded-full filter blur-xl pointer-events-none" />
 
@@ -750,51 +795,6 @@ export default function PlayDashboard() {
                 </motion.button>
               </div>
             </div>
-
-            {/* Quick Rules */}
-            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl backdrop-blur-2xl overflow-hidden transition-all duration-300">
-              <button 
-                onClick={() => setIsHowItWorksOpen(!isHowItWorksOpen)}
-                className="w-full flex items-center justify-between p-6 cursor-pointer hover:bg-zinc-800/20 transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 text-orange-500/60" />
-                  <h3 className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">How It Works: YieldBet Protocol</h3>
-                </div>
-                {isHowItWorksOpen ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
-              </button>
-              
-              <AnimatePresence>
-                {isHowItWorksOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ul className="px-6 pb-6 pt-2 space-y-4 text-[11px] text-zinc-500 leading-relaxed font-medium">
-                      <li className="flex gap-3">
-                        <span className="text-orange-500 font-extrabold text-sm shrink-0">1.</span>
-                        <span><strong className="text-zinc-300">Stake STX/sBTC</strong> into the lossless vault adapter contract. Your principal is always safe and completely withdrawable at any time.</span>
-                      </li>
-                      <li className="flex gap-3">
-                        <span className="text-orange-500 font-extrabold text-sm shrink-0">2.</span>
-                        <span><strong className="text-zinc-300">Compounding Yield</strong> generates "Yield Credits" automatically for you, minted directly block-by-block based on Stacks PoX returns.</span>
-                      </li>
-                      <li className="flex gap-3">
-                        <span className="text-orange-500 font-extrabold text-sm shrink-0">3.</span>
-                        <span><strong className="text-zinc-300">Deploy credits</strong> to predict future outcomes like target block timestamps or parity. If you lose, you only forfeit credits, <i>not</i> your principal.</span>
-                      </li>
-                      <li className="flex gap-3">
-                        <span className="text-orange-500 font-extrabold text-sm shrink-0">4.</span>
-                        <span><strong className="text-zinc-300">Claim winning pools</strong> directly to massively boost your effective Stacking APY!</span>
-                      </li>
-                    </ul>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
 
         </div>
       </div>
