@@ -13,6 +13,9 @@ import { useBlockYield } from "@/hooks/useBlockYield";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
+import { StacksMainnet } from "@stacks/network";
+
+const STACKS_MAINNET = new StacksMainnet();
 
 interface BlockData {
   height: number;
@@ -125,6 +128,7 @@ export default function PlayDashboard() {
     setSimState("broadcasting");
     try {
       await openContractCall({
+        network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "deposit-stx",
@@ -163,6 +167,7 @@ export default function PlayDashboard() {
     setSimState("broadcasting");
     try {
       await openContractCall({
+        network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "withdraw-stx",
@@ -198,6 +203,7 @@ export default function PlayDashboard() {
     setSimState("broadcasting");
     try {
       await openContractCall({
+        network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "redeem-yield-credits",
@@ -234,6 +240,7 @@ export default function PlayDashboard() {
     setSimState("broadcasting");
     try {
       await openContractCall({
+        network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "place-yield-bet",
@@ -277,6 +284,7 @@ export default function PlayDashboard() {
     setStatusMsg(`Claiming rewards for round #${roundId}...`);
     try {
       await openContractCall({
+        network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: "claim-reward",
