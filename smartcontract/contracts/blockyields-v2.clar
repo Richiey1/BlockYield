@@ -11,11 +11,12 @@
 (define-constant ERR-TOO-EARLY (err u408))
 (define-constant ERR-BLOCK-EXPIRED (err u409))
 (define-constant ERR-INSUFFICIENT-FUNDS (err u410))
+(define-constant ERR-STAKE-EXISTS (err u411)) ;; User already placed a bet for this block
 
 ;; Data Vars
 (define-data-var protocol-admin principal tx-sender)
 (define-data-var platform-fee-percent uint u2) ;; 2% protocol fee
-(define-data-var yield-rate-per-block uint u95) ;; Simulated ~5% APY per block
+(define-data-var yield-rate-per-block uint u95) ;; Simulated ~0.5% APY (95/1B scale * 52,560 blocks/yr ~= 0.5%)
 (define-data-var yield-precision-scale uint u1000000000) ;; 1,000,000,000 scaling factor
 
 ;; Vault Balances: Tracks principal deposits and last yield accrual block
@@ -183,6 +184,8 @@
             (asserts! (> amount u0) ERR-INVALID-STAKE)
             (asserts! (or (is-eq prediction u1) (is-eq prediction u2)) ERR-INVALID-STAKE)
             (asserts! (>= user-credits amount) ERR-INSUFFICIENT-FUNDS)
+            ;; Prevent silent stake overwrite -- one bet per user per block
+            (asserts! (is-none (map-get? stakes { block-height: target-height, user: tx-sender })) ERR-STAKE-EXISTS)
             
             ;; Deduct yield credits from user
             (map-set user-yield-credits tx-sender (- user-credits amount))
@@ -278,6 +281,25 @@
     (begin
         (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
         (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
+        (ok true)
+    )
+)
+
+;; Admin: Update the simulated yield rate per block (governance)
+(define-public (set-yield-rate (new-rate uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (var-set yield-rate-per-block new-rate)
+        (ok true)
+    )
+)
+
+;; Admin: Update the platform fee percentage -- capped at 10% (governance)
+(define-public (set-platform-fee (new-fee uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (asserts! (<= new-fee u10) ERR-INVALID-STAKE)
+        (var-set platform-fee-percent new-fee)
         (ok true)
     )
 )
