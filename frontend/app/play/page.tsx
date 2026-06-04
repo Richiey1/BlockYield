@@ -345,11 +345,11 @@ export default function PlayDashboard() {
                   </div>
                   <div className="w-[1px] h-6 bg-zinc-800" />
                   <div className="text-right">
-                    <p className="text-[8px] text-zinc-550 uppercase font-black tracking-widest">YIELD credits</p>
-                    <p className="text-xs font-extrabold text-green-450 animate-pulse">{yieldCredits}</p>
+                    <p className="text-[8px] text-zinc-500 uppercase font-black tracking-widest">YIELD credits</p>
+                    <p className="text-xs font-extrabold text-green-400 animate-pulse">{yieldCredits}</p>
                   </div>
                 </div>
-                <div className="text-xs font-bold text-zinc-350 bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-2xl">
+                <div className="text-xs font-bold text-zinc-300 bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-2xl">
                   {address?.substring(0, 6)}...{address?.substring(address.length - 4)}
                 </div>
               </>
