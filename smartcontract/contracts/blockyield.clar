@@ -1,4 +1,4 @@
-;; BlockYields V2 - Lossless Yield-Backed Tournament & Competition Engine
+;; BlockYield - Lossless Yield-Backed Tournament & Competition Engine
 ;; V2: Fixed platform-fee bug (fee now applied only on profit) and reserved keyword clash (principal -> curr-principal)
 
 (define-constant ERR-NOT-AUTHORIZED (err u401))
@@ -300,6 +300,15 @@
         (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
         (asserts! (<= new-fee u10) ERR-INVALID-STAKE)
         (var-set platform-fee-percent new-fee)
+        (ok true)
+    )
+)
+
+;; Admin: Transfer protocol admin rights (governance)
+(define-public (transfer-admin (new-admin principal))
+    (begin
+        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (var-set protocol-admin new-admin)
         (ok true)
     )
 )

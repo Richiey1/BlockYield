@@ -6,8 +6,8 @@ telemetry = true
 cache_dir = './.cache'
 
 
-[contracts.blockyields-v2]
-path = 'contracts/blockyields-v2.clar'
+[contracts.blockyield-v3]
+path = 'contracts/blockyield.clar'
 clarity_version = 2
 epoch = '2.5'
 
