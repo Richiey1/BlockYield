@@ -13,9 +13,7 @@ import { useBlockYield } from "@/hooks/useBlockYield";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
-import { StacksMainnet } from "@stacks/network";
-
-const STACKS_MAINNET = new StacksMainnet();
+import { STACKS_MAINNET } from "@stacks/network";
 
 interface BlockData {
   height: number;
