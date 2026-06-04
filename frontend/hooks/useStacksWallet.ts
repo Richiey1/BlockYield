@@ -66,9 +66,7 @@ export function useStacksWallet() {
 
   const network: Network = useMemo(() => {
     if (!userData?.profile?.stxAddress) return "disconnected";
-    if (userData.profile.stxAddress.testnet) return "testnet";
-    if (userData.profile.stxAddress.mainnet) return "mainnet";
-    return "disconnected";
+    return STACKS_NETWORK === 'mainnet' ? "mainnet" : "testnet";
   }, [userData]);
 
   const address = useMemo(() => {
