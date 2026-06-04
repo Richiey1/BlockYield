@@ -1,6 +1,6 @@
 // Standardized Contract Constants for BlockYield
 export const DEPLOYER_ADDRESS = 'SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF';
-export const CONTRACT_NAME = 'blockyields';
+export const CONTRACT_NAME = 'blockyield-v3';
 export const CONTRACT_FULL_NAME = `${DEPLOYER_ADDRESS}.${CONTRACT_NAME}`;
 
 export const FUNCTION_NAMES = {
