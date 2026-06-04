@@ -125,7 +125,7 @@ export function WalletButton({ wallet }: Props) {
           <div className="px-4 py-3.5 border-b border-zinc-900 bg-zinc-900/10">
             <div className="flex items-center gap-2">
               <Wallet className="w-4 h-4 text-orange-500 flex-shrink-0" />
-              <p className="text-[11px] font-mono font-medium text-orange-500 break-all">{address}</p>
+              <p className="text-[11px] font-mono font-medium text-orange-500 break-all">{label}</p>
             </div>
           </div>
 
