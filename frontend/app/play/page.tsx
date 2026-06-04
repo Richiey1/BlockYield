@@ -48,7 +48,7 @@ export default function PlayDashboard() {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [isLoadingBlocks, setIsLoadingBlocks] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
-  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
+  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(true);
   
   // Staking Input States
   const [depositAmount, setDepositAmount] = useState("");
