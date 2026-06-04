@@ -12,18 +12,18 @@ export default function AdminPage() {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!wallet.isConnected) {
+    if (!wallet.isSignedIn) {
       setIsAuthorized(false);
       return;
     }
     
-    if (wallet.stxAddress === DEPLOYER_ADDRESS) {
+    if (wallet.address === DEPLOYER_ADDRESS) {
       setIsAuthorized(true);
     } else {
       setIsAuthorized(false);
       setTimeout(() => router.push("/"), 2000);
     }
-  }, [wallet.isConnected, wallet.stxAddress, router]);
+  }, [wallet.isSignedIn, wallet.address, router]);
 
   if (isAuthorized === null) return null;
 

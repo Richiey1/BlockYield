@@ -6,7 +6,7 @@ import { DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 
 export function NavLinks() {
   const wallet = useStacksWallet();
-  const isAdmin = wallet.stxAddress === DEPLOYER_ADDRESS;
+  const isAdmin = wallet.address === DEPLOYER_ADDRESS;
 
   return (
     <nav aria-label="Primary navigation" className="hidden items-center gap-2 md:flex">
