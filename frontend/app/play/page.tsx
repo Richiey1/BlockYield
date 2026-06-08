@@ -317,10 +317,10 @@ export default function PlayDashboard() {
       <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-orange-650/5 rounded-full filter blur-[120px] pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-zinc-800/10 rounded-full filter blur-[150px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pt-4 sm:pt-8">
         
         {/* Navigation & Wallet Dashboard */}
-        <header className="flex flex-col lg:flex-row justify-between items-center bg-zinc-900/40 border border-zinc-800/60 rounded-[32px] p-6 backdrop-blur-2xl gap-4 shadow-xl">
+        <header className="flex flex-col lg:flex-row justify-between items-center bg-zinc-900/40 border border-zinc-800/60 rounded-3xl sm:rounded-[32px] p-4 sm:p-6 backdrop-blur-2xl gap-4 shadow-xl">
           <div className="flex items-center gap-4">
 
             <div>
@@ -331,26 +331,26 @@ export default function PlayDashboard() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 w-full lg:w-auto">
             {isConnected ? (
               <>
-                <div className="flex items-center gap-4 bg-zinc-950/60 border border-zinc-800/80 px-4 py-2 rounded-2xl">
-                  <div className="text-right">
-                    <p className="text-[8px] text-zinc-550 uppercase font-black tracking-widest">WALLET</p>
-                    <p className="text-xs font-extrabold text-white">{stxBalance} STX</p>
+                <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-3 sm:gap-4 bg-zinc-950/60 border border-zinc-800/80 px-3 py-2.5 sm:px-4 sm:py-2 rounded-2xl w-full sm:w-auto">
+                  <div className="text-center sm:text-right flex-1 sm:flex-initial min-w-[70px] sm:min-w-0">
+                    <p className="text-[8px] text-zinc-500 uppercase font-black tracking-widest">WALLET</p>
+                    <p className="text-xs font-extrabold text-white truncate">{stxBalance} STX</p>
                   </div>
-                  <div className="w-[1px] h-6 bg-zinc-800" />
-                  <div className="text-right">
-                    <p className="text-[8px] text-zinc-550 uppercase font-black tracking-widest">VAULT principal</p>
-                    <p className="text-xs font-extrabold text-orange-500">{vaultPrincipal} STX</p>
+                  <div className="hidden sm:block w-[1px] h-6 bg-zinc-800" />
+                  <div className="text-center sm:text-right flex-1 sm:flex-initial min-w-[90px] sm:min-w-0">
+                    <p className="text-[8px] text-zinc-500 uppercase font-black tracking-widest">VAULT principal</p>
+                    <p className="text-xs font-extrabold text-orange-500 truncate">{vaultPrincipal} STX</p>
                   </div>
-                  <div className="w-[1px] h-6 bg-zinc-800" />
-                  <div className="text-right">
+                  <div className="hidden sm:block w-[1px] h-6 bg-zinc-800" />
+                  <div className="text-center sm:text-right flex-1 sm:flex-initial min-w-[90px] sm:min-w-0">
                     <p className="text-[8px] text-zinc-500 uppercase font-black tracking-widest">YIELD credits</p>
-                    <p className="text-xs font-extrabold text-green-400 animate-pulse">{yieldCredits}</p>
+                    <p className="text-xs font-extrabold text-green-400 animate-pulse truncate">{yieldCredits}</p>
                   </div>
                 </div>
-                <div className="text-xs font-bold text-zinc-300 bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-2xl">
+                <div className="text-xs font-bold text-zinc-300 bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-2xl text-center w-full sm:w-auto">
                   {address?.substring(0, 6)}...{address?.substring(address.length - 4)}
                 </div>
               </>
@@ -359,7 +359,7 @@ export default function PlayDashboard() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={connect}
-                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-orange-500/10 flex items-center gap-2"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2"
               >
                 <Wallet className="w-4 h-4" /> Connect Stacks Wallet
               </motion.button>
@@ -388,16 +388,16 @@ export default function PlayDashboard() {
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           
           {/* LEFT & CENTER: Vault HUD & Analytics Ledger */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             
             {/* STAKING VAULT HUB */}
-            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden">
+            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full filter blur-2xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
                     <ShieldCheck className="w-5 h-5 text-orange-500" />
@@ -407,13 +407,13 @@ export default function PlayDashboard() {
                     <p className="text-[10px] text-zinc-500">Deposit principal to generate risk-free betting yield</p>
                   </div>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
+                <div className="self-start sm:self-auto px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
                   5% APY compounding
                 </div>
               </div>
 
               {/* Three Action columns: Deposit, Withdraw, Redeem Yield */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pt-2">
                 
                 {/* Deposit Column */}
                 <div className="bg-zinc-950/60 border border-zinc-850 p-5 rounded-2xl flex flex-col justify-between space-y-4">
@@ -521,7 +521,7 @@ export default function PlayDashboard() {
             </div>
 
             {/* Recent Blocks Analytics Feed */}
-            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden">
+            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full filter blur-2xl pointer-events-none" />
               
               <div className="flex justify-between items-center mb-6">
@@ -543,42 +543,44 @@ export default function PlayDashboard() {
                   <RefreshCw className="w-4 h-4 text-zinc-400" />
                 </motion.button>
               </div>
-
+              
               {/* Responsive Visual Block Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
                 {blocks.map((block, idx) => (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.05 }}
                     key={idx} 
-                    className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-orange-500/20 transition-all shadow-md group relative"
+                    className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between hover:border-orange-500/20 transition-all shadow-md group relative gap-3"
                   >
-                    <div>
-                      <p className="text-[9px] font-black text-zinc-550 tracking-wider">BLOCK</p>
-                      <p className="text-xs font-black text-orange-500 mt-0.5">#{block.height}</p>
+                    <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                      <div>
+                        <span className="text-[8px] font-black text-zinc-500 tracking-wider">BLOCK</span>
+                        <p className="text-xs font-black text-orange-500">#{block.height}</p>
+                      </div>
+                      <span className="text-[9px] font-extrabold text-zinc-650">L2</span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-3">
                       <div>
                         <p className="text-[8px] text-zinc-500 font-medium">Tx Count</p>
-                        <p className="text-[10px] font-bold text-zinc-200">{block.tx_count} Txs</p>
+                        <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.tx_count} Txs</p>
                       </div>
                       <div>
                         <p className="text-[8px] text-zinc-500 font-medium">Parity</p>
-                        <p className="text-[10px] font-bold text-orange-400">
-                          {block.height % 2 === 0 ? "Even (u1)" : "Odd (u2)"}
+                        <p className="text-[10px] font-bold text-orange-400 leading-tight">
+                          {block.height % 2 === 0 ? "Even" : "Odd"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-[8px] text-zinc-500 font-medium">Total Fees</p>
-                        <p className="text-[10px] font-bold text-zinc-200">{block.fees.toFixed(4)} STX</p>
+                        <p className="text-[8px] text-zinc-500 font-medium">Fees (STX)</p>
+                        <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.fees.toFixed(3)}</p>
                       </div>
-                    </div>
-
-                    <div className="border-t border-zinc-900 pt-2 flex items-center justify-between text-[8px] text-zinc-600 font-semibold uppercase">
-                      <span>TIME</span>
-                      <span>{block.timestamp}</span>
+                      <div>
+                        <p className="text-[8px] text-zinc-500 font-medium">Time</p>
+                        <p className="text-[10px] font-bold text-zinc-350 leading-tight">{block.timestamp}</p>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -586,7 +588,7 @@ export default function PlayDashboard() {
             </div>
 
             {/* My Prediction Ledger */}
-            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-2xl shadow-xl">
+            <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-2xl shadow-xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
                   <History className="w-5 h-5 text-orange-500" />
@@ -653,18 +655,18 @@ export default function PlayDashboard() {
                     </motion.div>
                   );
                 })}
-              </div>
+                         </div>
             </div>
           </div>
 
           {/* RIGHT: Live Staking Panel */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             
             {/* Quick Rules - Moved Above Terminal */}
-            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-3xl backdrop-blur-2xl overflow-hidden transition-all duration-300">
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-2xl sm:rounded-3xl backdrop-blur-2xl overflow-hidden transition-all duration-300">
               <button 
                 onClick={() => setIsHowItWorksOpen(!isHowItWorksOpen)}
-                className="w-full flex items-center justify-between p-6 cursor-pointer hover:bg-zinc-800/20 transition-colors"
+                className="w-full flex items-center justify-between p-4 sm:p-6 cursor-pointer hover:bg-zinc-800/20 transition-colors"
               >
                 <div className="flex items-center gap-2">
                   <HelpCircle className="w-4 h-4 text-orange-500/60" />
@@ -681,7 +683,7 @@ export default function PlayDashboard() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ul className="px-6 pb-6 pt-2 space-y-4 text-[11px] text-zinc-500 leading-relaxed font-medium">
+                    <ul className="px-4 pb-4 sm:px-6 sm:pb-6 pt-2 space-y-4 text-[11px] text-zinc-500 leading-relaxed font-medium">
                       <li className="flex gap-3">
                         <span className="text-orange-500 font-extrabold text-sm shrink-0">1.</span>
                         <span><strong className="text-zinc-300">Stake STX/sBTC</strong> into the lossless vault adapter contract. Your principal is always safe and completely withdrawable at any time.</span>
@@ -703,10 +705,10 @@ export default function PlayDashboard() {
                 )}
               </AnimatePresence>
             </div>
-
-            <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-orange-500/10 rounded-3xl p-6 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+ 
+            <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-orange-500/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/5 rounded-full filter blur-xl pointer-events-none" />
-
+ 
               <div className="flex items-center gap-3 mb-6 border-b border-zinc-800/80 pb-4">
                 <Cpu className="w-5 h-5 text-orange-500" />
                 <h2 className="text-sm font-extrabold text-white uppercase tracking-wider">Prediction Terminal</h2>

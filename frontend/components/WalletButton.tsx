@@ -85,7 +85,7 @@ export function WalletButton({ wallet }: Props) {
       <button
         type="button"
         disabled
-        className="px-5 py-2.5 bg-zinc-950/80 text-orange-500/50 border border-orange-500/20 rounded-xl flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase opacity-60"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 text-orange-500/50 border border-orange-500/20 rounded-xl flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase opacity-60"
       >
         <span>LOADING...</span>
       </button>
@@ -98,7 +98,7 @@ export function WalletButton({ wallet }: Props) {
         type="button"
         onClick={handleConnect}
         disabled={!isReady}
-        className="px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
       >
         <span>{label}</span>
       </button>
@@ -111,11 +111,11 @@ export function WalletButton({ wallet }: Props) {
       <button
         type="button"
         onClick={toggleDropdown}
-        className="px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer"
       >
-        <Wallet className="h-4 w-4" />
-        <span className="text-xs">{label}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform duration-250 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        <Wallet className="h-4 w-4 flex-shrink-0" />
+        <span className="text-xs truncate">{label}</span>
+        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-250 ${isDropdownOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}

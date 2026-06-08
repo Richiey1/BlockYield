@@ -33,7 +33,7 @@ export function NetworkBadge({ network }: Props) {
 
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${variant.bg} ${variant.text}`}
+      className={`hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${variant.bg} ${variant.text}`}
     >
       <span className={`h-2.5 w-2.5 rounded-full ${variant.dot}`} />
       {variant.label}
