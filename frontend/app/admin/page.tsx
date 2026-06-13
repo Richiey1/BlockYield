@@ -4,7 +4,7 @@ import { ShieldAlert, ShieldCheck, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStacksWallet } from "@/hooks/useStacksWallet";
-import { DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
+import { ADMIN_WALLETS, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 
 export default function AdminPage() {
   const wallet = useStacksWallet();
@@ -17,7 +17,7 @@ export default function AdminPage() {
       return;
     }
     
-    if (wallet.address === DEPLOYER_ADDRESS) {
+    if (wallet.address && ADMIN_WALLETS.includes(wallet.address)) {
       setIsAuthorized(true);
     } else {
       setIsAuthorized(false);

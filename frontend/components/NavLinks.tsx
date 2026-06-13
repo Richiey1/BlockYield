@@ -2,11 +2,11 @@ import Link from "next/link";
 import { navItems } from "@/lib/navigation";
 
 import { useStacksWallet } from "@/hooks/useStacksWallet";
-import { DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
+import { ADMIN_WALLETS } from "@/lib/constants/contracts";
 
 export function NavLinks() {
   const wallet = useStacksWallet();
-  const isAdmin = wallet.address === DEPLOYER_ADDRESS;
+  const isAdmin = wallet.address ? ADMIN_WALLETS.includes(wallet.address) : false;
 
   return (
     <nav aria-label="Primary navigation" className="hidden items-center gap-2 md:flex">
@@ -32,3 +32,4 @@ export function NavLinks() {
   );
 
 }
+
