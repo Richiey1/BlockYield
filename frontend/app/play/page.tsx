@@ -83,7 +83,64 @@ export default function PlayDashboard() {
   }
   
   // Interactive prediction rounds matching the on-chain parity contract structure
-  const [rounds, setRounds] = useState<PredictionRound[]>([]);
+  const [rounds, setRounds] = useState<PredictionRound[]>([
+    {
+      id: 154210,
+      targetBlock: 154210,
+      outcomeType: "parity",
+      status: "open",
+      totalPool: "15,200",
+      options: [
+        { label: "Even Block Height (0)", value: 0 },
+        { label: "Odd Block Height (1)", value: 1 }
+      ]
+    },
+    {
+      id: 154211,
+      targetBlock: 154211,
+      outcomeType: "parity",
+      status: "open",
+      totalPool: "8,400",
+      options: [
+        { label: "Even Block Height (0)", value: 0 },
+        { label: "Odd Block Height (1)", value: 1 }
+      ]
+    },
+    {
+      id: 154209,
+      targetBlock: 154209,
+      outcomeType: "parity",
+      status: "resolved",
+      totalPool: "12,000",
+      outcome: 1, // Odd
+      myStake: {
+        amount: "150.00",
+        prediction: 1
+      },
+      hasClaimed: false,
+      options: [
+        { label: "Even Block Height (0)", value: 0 },
+        { label: "Odd Block Height (1)", value: 1 }
+      ]
+    },
+    {
+      id: 154208,
+      targetBlock: 154208,
+      outcomeType: "parity",
+      status: "resolved",
+      totalPool: "10,500",
+      outcome: 0, // Even
+      myStake: {
+        amount: "250.00",
+        prediction: 1
+      },
+      hasClaimed: false,
+      options: [
+        { label: "Even Block Height (0)", value: 0 },
+        { label: "Odd Block Height (1)", value: 1 }
+      ]
+    }
+  ]);
 
   // Real-time compounding visual ticking yield counter — now handled by useBlockYield hook
 
@@ -546,44 +603,63 @@ export default function PlayDashboard() {
               
               {/* Responsive Visual Block Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
-                {blocks.map((block, idx) => (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                    key={idx} 
-                    className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between hover:border-orange-500/20 transition-all shadow-md group relative gap-3"
-                  >
-                    <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
-                      <div>
-                        <span className="text-[8px] font-black text-zinc-500 tracking-wider">BLOCK</span>
-                        <p className="text-xs font-black text-orange-500">#{block.height}</p>
+                {isLoadingBlocks || blocks.length === 0 ? (
+                  Array.from({ length: 5 }).map((_, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-zinc-950/40 border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between h-[108px] relative overflow-hidden"
+                    >
+                      <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                        <div className="h-3.5 w-16 bg-zinc-800/80 rounded animate-pulse" />
+                        <div className="h-3 w-6 bg-zinc-800/50 rounded animate-pulse" />
                       </div>
-                      <span className="text-[9px] font-extrabold text-zinc-650">L2</span>
+                      <div className="space-y-2 mt-2">
+                        <div className="h-3 w-full bg-zinc-800/60 rounded animate-pulse" />
+                        <div className="h-3 w-2/3 bg-zinc-800/40 rounded animate-pulse" />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
                     </div>
+                  ))
+                ) : (
+                  blocks.map((block, idx) => (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                      key={idx} 
+                      className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between hover:border-orange-500/20 transition-all shadow-md group relative gap-3"
+                    >
+                      <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                        <div>
+                          <span className="text-[8px] font-black text-zinc-500 tracking-wider">BLOCK</span>
+                          <p className="text-xs font-black text-orange-500">#{block.height}</p>
+                        </div>
+                        <span className="text-[9px] font-extrabold text-zinc-650">L2</span>
+                      </div>
 
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-3">
-                      <div>
-                        <p className="text-[8px] text-zinc-500 font-medium">Tx Count</p>
-                        <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.tx_count} Txs</p>
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-3">
+                        <div>
+                          <p className="text-[8px] text-zinc-500 font-medium">Tx Count</p>
+                          <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.tx_count} Txs</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] text-zinc-500 font-medium">Parity</p>
+                          <p className="text-[10px] font-bold text-orange-400 leading-tight">
+                            {block.height % 2 === 0 ? "Even" : "Odd"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] text-zinc-500 font-medium">Fees (STX)</p>
+                          <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.fees.toFixed(3)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] text-zinc-500 font-medium">Time</p>
+                          <p className="text-[10px] font-bold text-zinc-350 leading-tight">{block.timestamp}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[8px] text-zinc-500 font-medium">Parity</p>
-                        <p className="text-[10px] font-bold text-orange-400 leading-tight">
-                          {block.height % 2 === 0 ? "Even" : "Odd"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[8px] text-zinc-500 font-medium">Fees (STX)</p>
-                        <p className="text-[10px] font-bold text-zinc-200 leading-tight">{block.fees.toFixed(3)}</p>
-                      </div>
-                      <div>
-                        <p className="text-[8px] text-zinc-500 font-medium">Time</p>
-                        <p className="text-[10px] font-bold text-zinc-350 leading-tight">{block.timestamp}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -600,62 +676,71 @@ export default function PlayDashboard() {
               </div>
 
               <div className="space-y-4">
-                {rounds.filter(r => r.myStake).map((round, idx) => {
-                  const isWon = round.status === "resolved" && round.myStake?.prediction === round.outcome;
-                  
-                  return (
-                    <motion.div 
-                      layout
-                      key={idx} 
-                      className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/60 border border-zinc-800/60 rounded-2xl p-5 gap-4 hover:border-zinc-800 transition-all"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-bold text-zinc-350">Round #{round.id}</span>
-                          <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-orange-400 tracking-wider">
-                            {round.outcomeType}
-                          </span>
+                {rounds.filter(r => r.myStake).length === 0 ? (
+                  <div className="text-center py-10 bg-zinc-950/40 border border-dashed border-zinc-850 rounded-2xl p-6 flex flex-col items-center justify-center">
+                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">No prediction wagers found</p>
+                    <p className="text-[10px] text-zinc-650 mt-1 max-w-xs mx-auto">
+                      Deploy your compounding yield credits into active prediction pools to start earning risk-free yield jackpots!
+                    </p>
+                  </div>
+                ) : (
+                  rounds.filter(r => r.myStake).map((round, idx) => {
+                    const isWon = round.status === "resolved" && round.myStake?.prediction === round.outcome;
+                    
+                    return (
+                      <motion.div 
+                        layout
+                        key={idx} 
+                        className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/60 border border-zinc-800/60 rounded-2xl p-5 gap-4 hover:border-zinc-800 transition-all"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold text-zinc-350">Round #{round.id}</span>
+                            <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-orange-400 tracking-wider">
+                              {round.outcomeType}
+                            </span>
+                          </div>
+                          <p className="text-xs font-bold text-zinc-400 mt-1">
+                            Staked on target block <span className="text-white">#{round.targetBlock}</span>
+                          </p>
+                          <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+                            <span>Staked yield: <span className="text-green-400 font-extrabold">{round.myStake?.amount} Credits</span></span>
+                            <span className="text-zinc-700">•</span>
+                            <span>Predicted outcome Option: <span className="text-zinc-300 font-extrabold">#{round.myStake?.prediction}</span></span>
+                          </div>
                         </div>
-                        <p className="text-xs font-bold text-zinc-400 mt-1">
-                          Staked on target block <span className="text-white">#{round.targetBlock}</span>
-                        </p>
-                        <div className="flex items-center gap-2 text-[11px] text-zinc-500">
-                          <span>Staked yield: <span className="text-green-400 font-extrabold">{round.myStake?.amount} Credits</span></span>
-                          <span className="text-zinc-700">•</span>
-                          <span>Predicted outcome Option: <span className="text-zinc-300 font-extrabold">#{round.myStake?.prediction}</span></span>
-                        </div>
-                      </div>
 
-                      <div className="w-full md:w-auto flex justify-end">
-                        {round.status === "open" ? (
-                          <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-zinc-500 bg-zinc-900/60 border border-zinc-850 px-4 py-2.5 rounded-xl">
-                            <Clock className="w-3.5 h-3.5" /> Pending Block
-                          </div>
-                        ) : isWon ? (
-                          round.hasClaimed ? (
-                            <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-green-500 bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-xl">
-                              <CheckCircle className="w-3.5 h-3.5" /> Won & Claimed
+                        <div className="w-full md:w-auto flex justify-end">
+                          {round.status === "open" ? (
+                            <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-zinc-500 bg-zinc-900/60 border border-zinc-850 px-4 py-2.5 rounded-xl">
+                              <Clock className="w-3.5 h-3.5" /> Pending Block
                             </div>
+                          ) : isWon ? (
+                            round.hasClaimed ? (
+                              <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-green-500 bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-xl">
+                                <CheckCircle className="w-3.5 h-3.5" /> Won & Claimed
+                              </div>
+                            ) : (
+                              <motion.button
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                                onClick={() => handleClaimPayout(round.id)}
+                                className="text-[10px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-black font-black uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all shadow-md shadow-green-500/20 flex items-center gap-2"
+                              >
+                                🏆 Claim Yield Jackpot
+                              </motion.button>
+                            )
                           ) : (
-                            <motion.button
-                              whileHover={{ scale: 1.03 }}
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() => handleClaimPayout(round.id)}
-                              className="text-[10px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-black font-black uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all shadow-md shadow-green-500/20 flex items-center gap-2"
-                            >
-                              🏆 Claim Yield Jackpot
-                            </motion.button>
-                          )
-                        ) : (
-                          <div className="text-[10px] font-extrabold uppercase tracking-widest text-red-500 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl">
-                            Lossless Forfeit (0 STX lost!)
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-                         </div>
+                            <div className="text-[10px] font-extrabold uppercase tracking-widest text-red-500 bg-red-500/10 border border-red-500/20 px-4 py-2.5 rounded-xl">
+                              Lossless Forfeit (0 STX lost!)
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </div>
 
