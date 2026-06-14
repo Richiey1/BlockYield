@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
 import { useBlockYield } from "@/hooks/useBlockYield";
-import { CONTRACT_NAME, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
+import { CONTRACT_NAME, DEPLOYER_ADDRESS, FUNCTION_NAMES } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
 import { STACKS_MAINNET } from "@stacks/network";
@@ -186,7 +186,7 @@ export default function PlayDashboard() {
         network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
-        functionName: "deposit-stx",
+        functionName: FUNCTION_NAMES.DEPOSIT_STX,
         functionArgs: [uintCV(microStx)],
         postConditions: [
           Pc.principal(address as string).willSendEq(microStx).ustx()
@@ -225,7 +225,7 @@ export default function PlayDashboard() {
         network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
-        functionName: "withdraw-stx",
+        functionName: FUNCTION_NAMES.WITHDRAW_STX,
         functionArgs: [uintCV(microStx)],
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
@@ -261,7 +261,7 @@ export default function PlayDashboard() {
         network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
-        functionName: "redeem-yield-credits",
+        functionName: FUNCTION_NAMES.REDEEM_YIELD_CREDITS,
         functionArgs: [uintCV(microStx)],
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
@@ -298,7 +298,7 @@ export default function PlayDashboard() {
         network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
-        functionName: "place-yield-bet",
+        functionName: FUNCTION_NAMES.PLACE_YIELD_BET,
         functionArgs: [uintCV(selectedRound), uintCV(microStx), uintCV(predictionVal)],
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
@@ -342,7 +342,7 @@ export default function PlayDashboard() {
         network: STACKS_MAINNET,
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
-        functionName: "claim-reward",
+        functionName: FUNCTION_NAMES.CLAIM_REWARD,
         functionArgs: [uintCV(roundId)],
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,

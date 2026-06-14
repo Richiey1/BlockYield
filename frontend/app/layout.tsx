@@ -66,6 +66,7 @@ export const metadata: Metadata = {
     apple: "/blockyield-logo.png",
     shortcut: "/favicon.svg",
   },
+  manifest: "/site.webmanifest",
 };
 
 export const viewport: Viewport = {
