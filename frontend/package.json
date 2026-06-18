@@ -4,8 +4,8 @@
   "description": "Frontend for StacksTacToe - A decentralized Tic-Tac-Toe game on Stacks blockchain",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "build": "NEXT_DISABLE_ESLINT=1 next build --webpack",
+    "dev": "next dev",
+    "build": "NEXT_DISABLE_ESLINT=1 next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -34,6 +34,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "baseline-browser-mapping": "^2.10.38",
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
     "tailwindcss": "^4",

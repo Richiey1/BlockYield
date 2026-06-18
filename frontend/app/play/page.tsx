@@ -14,6 +14,7 @@ import { CONTRACT_NAME, DEPLOYER_ADDRESS, FUNCTION_NAMES } from "@/lib/constants
 import { openContractCall } from "@stacks/connect";
 import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
 import { STACKS_MAINNET } from "@stacks/network";
+import { fetchDynamicRounds } from "./dynamicRounds";
 
 interface BlockData {
   height: number;
@@ -82,65 +83,8 @@ export default function PlayDashboard() {
     setSimState("simulating");
   }
   
-  // Interactive prediction rounds matching the on-chain parity contract structure
-  const [rounds, setRounds] = useState<PredictionRound[]>([
-    {
-      id: 154210,
-      targetBlock: 154210,
-      outcomeType: "parity",
-      status: "open",
-      totalPool: "15,200",
-      options: [
-        { label: "Even Block Height (0)", value: 0 },
-        { label: "Odd Block Height (1)", value: 1 }
-      ]
-    },
-    {
-      id: 154211,
-      targetBlock: 154211,
-      outcomeType: "parity",
-      status: "open",
-      totalPool: "8,400",
-      options: [
-        { label: "Even Block Height (0)", value: 0 },
-        { label: "Odd Block Height (1)", value: 1 }
-      ]
-    },
-    {
-      id: 154209,
-      targetBlock: 154209,
-      outcomeType: "parity",
-      status: "resolved",
-      totalPool: "12,000",
-      outcome: 1, // Odd
-      myStake: {
-        amount: "150.00",
-        prediction: 1
-      },
-      hasClaimed: false,
-      options: [
-        { label: "Even Block Height (0)", value: 0 },
-        { label: "Odd Block Height (1)", value: 1 }
-      ]
-    },
-    {
-      id: 154208,
-      targetBlock: 154208,
-      outcomeType: "parity",
-      status: "resolved",
-      totalPool: "10,500",
-      outcome: 0, // Even
-      myStake: {
-        amount: "250.00",
-        prediction: 1
-      },
-      hasClaimed: false,
-      options: [
-        { label: "Even Block Height (0)", value: 0 },
-        { label: "Odd Block Height (1)", value: 1 }
-      ]
-    }
-  ]);
+  const [rounds, setRounds] = useState<PredictionRound[]>([]);
+  const [isFetchingRounds, setIsFetchingRounds] = useState(false);
 
   // Real-time compounding visual ticking yield counter — now handled by useBlockYield hook
 
@@ -169,11 +113,32 @@ export default function PlayDashboard() {
 
   // Balance and contract state logic is fully handled by useBlockYield
 
+  async function fetchRounds() {
+    setIsFetchingRounds(true);
+    try {
+      const dynamicRounds = await fetchDynamicRounds(address || null);
+      if (dynamicRounds.length > 0) {
+        setRounds(dynamicRounds);
+        if (!dynamicRounds.find(r => r.id === selectedRound)) {
+          setSelectedRound(dynamicRounds[0].id);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch rounds:", e);
+    } finally {
+      setIsFetchingRounds(false);
+    }
+  }
+
   useEffect(() => {
     fetchRecentBlocks();
-    const interval = setInterval(fetchRecentBlocks, 30000);
+    fetchRounds();
+    const interval = setInterval(() => {
+      fetchRecentBlocks();
+      fetchRounds();
+    }, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [address]);
 
   // Balance fetching now handled by useBlockYield hook
 
