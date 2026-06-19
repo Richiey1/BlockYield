@@ -91,7 +91,7 @@ export async function fetchDynamicRounds(address: string | null) {
         }
       }
     } catch (e) {
-      console.warn(`Failed to fetch data for height ${height}`, e);
+      // console.warn(`Failed to fetch data for height ${height}`, e);
     }
 
     rounds.push({
