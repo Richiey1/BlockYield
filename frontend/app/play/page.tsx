@@ -118,7 +118,7 @@ export default function PlayDashboard() {
     try {
       const dynamicRounds = await fetchDynamicRounds(address || null);
       if (dynamicRounds.length > 0) {
-        setRounds(dynamicRounds);
+        setRounds(dynamicRounds as PredictionRound[]);
         if (!dynamicRounds.find(r => r.id === selectedRound)) {
           setSelectedRound(dynamicRounds[0].id);
         }
