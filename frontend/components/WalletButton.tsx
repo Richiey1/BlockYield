@@ -113,7 +113,9 @@ export function WalletButton({ wallet }: Props) {
         onClick={toggleDropdown}
         className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer"
       >
-        <Wallet className="h-4 w-4 flex-shrink-0" />
+        <div className="h-5 w-5 rounded overflow-hidden bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shrink-0">
+          <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${address}`} alt="avatar" className="w-full h-full object-cover" />
+        </div>
         <span className="text-xs truncate">{label}</span>
         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-250 ${isDropdownOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -123,8 +125,10 @@ export function WalletButton({ wallet }: Props) {
         <div className="absolute right-0 mt-3 w-64 bg-zinc-950/95 border border-zinc-800 backdrop-blur-2xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(249,115,22,0.03)] overflow-hidden z-50 animate-fadeIn">
           {/* Wallet Address */}
           <div className="px-4 py-3.5 border-b border-zinc-900 bg-zinc-900/10">
-            <div className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-orange-500 flex-shrink-0" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shrink-0">
+                <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${address}`} alt="avatar" className="w-full h-full object-cover" />
+              </div>
               <p className="text-[11px] font-mono font-medium text-orange-500 break-all">{label}</p>
             </div>
           </div>
