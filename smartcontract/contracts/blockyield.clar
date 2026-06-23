@@ -14,7 +14,107 @@
 (define-constant ERR-STAKE-EXISTS (err u411)) ;; User already placed a bet for this block
 
 ;; Data Vars
-(define-data-var protocol-admin principal tx-sender)
+(define-data-var fee-address principal tx-sender)
+
+;; ===== Multi-Admin 70% Quorum =====
+(define-map admins principal bool)
+(define-data-var admin-count uint u1)
+
+;; Initialize deployer as admin
+(map-set admins tx-sender true)
+
+(define-read-only (is-admin (caller principal))
+    (default-to false (map-get? admins caller))
+)
+
+(define-read-only (get-required-approvals)
+    (let ((count (var-get admin-count)))
+        (if (is-eq count u1)
+            u1
+            (/ (+ (* count u70) u99) u100)
+        )
+    )
+)
+
+(define-map admin-proposals
+    uint
+    {
+        candidate: principal,
+        is-add: bool,
+        approvals: uint,
+        executed: bool
+    }
+)
+(define-map admin-has-approved { proposal-id: uint, approver: principal } bool)
+(define-data-var next-admin-proposal-id uint u0)
+
+(define-private (execute-admin-proposal (proposal-id uint))
+    (let (
+        (proposal (unwrap-panic (map-get? admin-proposals proposal-id)))
+        (required-approvals (get-required-approvals))
+        (candidate (get candidate proposal))
+    )
+        (if (>= (get approvals proposal) required-approvals)
+            (begin
+                (map-set admin-proposals proposal-id (merge proposal { executed: true }))
+                (if (get is-add proposal)
+                    (begin
+                        (map-set admins candidate true)
+                        (var-set admin-count (+ (var-get admin-count) u1))
+                    )
+                    (begin
+                        (map-set admins candidate false)
+                        (var-set admin-count (- (var-get admin-count) u1))
+                    )
+                )
+                true
+            )
+            false
+        )
+    )
+)
+
+(define-public (propose-admin-change (candidate principal) (is-add bool))
+    (begin
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
+        (let ((proposal-id (var-get next-admin-proposal-id)))
+            (map-set admin-proposals proposal-id {
+                candidate: candidate,
+                is-add: is-add,
+                approvals: u1,
+                executed: false
+            })
+            (map-set admin-has-approved { proposal-id: proposal-id, approver: tx-sender } true)
+            (var-set next-admin-proposal-id (+ proposal-id u1))
+            (execute-admin-proposal proposal-id)
+            (ok proposal-id)
+        )
+    )
+)
+
+(define-public (approve-admin-change (proposal-id uint))
+    (let (
+        (proposal (unwrap! (map-get? admin-proposals proposal-id) (err u404)))
+    )
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
+        (asserts! (not (get executed proposal)) (err u400))
+        (asserts! (not (default-to false (map-get? admin-has-approved { proposal-id: proposal-id, approver: tx-sender }))) (err u409))
+
+        (map-set admin-has-approved { proposal-id: proposal-id, approver: tx-sender } true)
+        (map-set admin-proposals proposal-id (merge proposal { approvals: (+ (get approvals proposal) u1) }))
+        
+        (execute-admin-proposal proposal-id)
+        (ok true)
+    )
+)
+
+(define-public (set-fee-address (new-address principal))
+    (begin
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
+        (var-set fee-address new-address)
+        (ok true)
+    )
+)
 (define-data-var platform-fee-percent uint u2) ;; 2% protocol fee
 (define-data-var yield-rate-per-block uint u95) ;; Simulated ~0.5% APY (95/1B scale * 52,560 blocks/yr ~= 0.5%)
 (define-data-var yield-precision-scale uint u1000000000) ;; 1,000,000,000 scaling factor
@@ -251,7 +351,7 @@
                 (profit (if (> raw-share user-stake) (- raw-share user-stake) u0))
                 (platform-fee (/ (* profit (var-get platform-fee-percent)) u100))
                 (payout-amount (- raw-share platform-fee))
-                (admin-addr (var-get protocol-admin))
+                (admin-addr (var-get fee-address))
                 (current-credits (default-to u0 (map-get? user-yield-credits tx-sender)))
             )
             
@@ -279,7 +379,7 @@
 ;; Admin function to fund the contract reserve with STX for yield payouts
 (define-public (fund-yield-reserve (amount uint))
     (begin
-        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
         (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
         (ok true)
     )
@@ -288,7 +388,7 @@
 ;; Admin: Update the simulated yield rate per block (governance)
 (define-public (set-yield-rate (new-rate uint))
     (begin
-        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
         (var-set yield-rate-per-block new-rate)
         (ok true)
     )
@@ -297,21 +397,14 @@
 ;; Admin: Update the platform fee percentage -- capped at 10% (governance)
 (define-public (set-platform-fee (new-fee uint))
     (begin
-        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
         (asserts! (<= new-fee u10) ERR-INVALID-STAKE)
         (var-set platform-fee-percent new-fee)
         (ok true)
     )
 )
 
-;; Admin: Transfer protocol admin rights (governance)
-(define-public (transfer-admin (new-admin principal))
-    (begin
-        (asserts! (is-eq tx-sender (var-get protocol-admin)) ERR-NOT-AUTHORIZED)
-        (var-set protocol-admin new-admin)
-        (ok true)
-    )
-)
+
 
 ;; Read-only Functions
 
