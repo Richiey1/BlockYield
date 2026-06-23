@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: "BlockYield",
     images: [
       {
-        url: "/blockyield-logo.png",
+        url: "/favicon.svg",
         width: 512,
         height: 512,
         alt: "BlockYield Logo",
@@ -59,11 +59,11 @@ export const metadata: Metadata = {
     title: "BlockYield — Lossless Yield Tournament Engine",
     description:
       "Decentralized Lossless Yield-Backed Tournament Engine on Stacks L2.",
-    images: ["/blockyield-logo.png"],
+    images: ["/favicon.svg"],
   },
   icons: {
     icon: "/favicon.svg",
-    apple: "/blockyield-logo.png",
+    apple: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   manifest: "/site.webmanifest",

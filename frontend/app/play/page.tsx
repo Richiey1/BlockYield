@@ -460,6 +460,11 @@ export default function PlayDashboard() {
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-orange-500 hover:text-orange-400 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded-md"
                       >MAX</button>
                     </div>
+                    {depositAmount && !isNaN(parseFloat(depositAmount)) && (
+                      <div className="flex justify-end text-[9px] text-zinc-500 font-mono mt-1 pr-1">
+                        Raw: {Math.floor(parseFloat(depositAmount) * 1e6).toLocaleString()} micro-STX
+                      </div>
+                    )}
                     {exceedsDeposit && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Insufficient balance</p>}
                     <button 
                       onClick={handleDeposit}
@@ -494,6 +499,11 @@ export default function PlayDashboard() {
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-orange-500 hover:text-orange-400 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded-md"
                       >MAX</button>
                     </div>
+                    {withdrawAmount && !isNaN(parseFloat(withdrawAmount)) && (
+                      <div className="flex justify-end text-[9px] text-zinc-500 font-mono mt-1 pr-1">
+                        Raw: {Math.floor(parseFloat(withdrawAmount) * 1e6).toLocaleString()} micro-STX
+                      </div>
+                    )}
                     {exceedsWithdraw && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Exceeds vault principal</p>}
                     <button 
                       onClick={handleWithdraw}
@@ -528,6 +538,11 @@ export default function PlayDashboard() {
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-black text-green-400 hover:text-green-300 bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 rounded-md"
                       >MAX</button>
                     </div>
+                    {redeemAmount && !isNaN(parseFloat(redeemAmount)) && (
+                      <div className="flex justify-end text-[9px] text-zinc-500 font-mono mt-1 pr-1">
+                        Raw: {Math.floor(parseFloat(redeemAmount) * 1e6).toLocaleString()} micro-STX
+                      </div>
+                    )}
                     {exceedsRedeem && <p className="text-[9px] text-red-500 font-bold mt-1 flex items-center gap-1 animate-pulse"><AlertTriangle className="w-3 h-3" /> Exceeds available credits</p>}
                     <button 
                       onClick={handleRedeemYield}
@@ -829,6 +844,11 @@ export default function PlayDashboard() {
                       onChange={(e) => setStakeAmount(e.target.value)}
                       className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-4 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                     />
+                    {stakeAmount && !isNaN(parseFloat(stakeAmount)) && (
+                      <div className="flex justify-end text-[9px] text-zinc-500 font-mono mt-1 pr-1">
+                        Raw: {Math.floor(parseFloat(stakeAmount) * 1e6).toLocaleString()} micro-STX
+                      </div>
+                    )}
                     <div className="mt-2.5 text-[10px] text-zinc-550 text-right font-bold tracking-wide">
                       {stakeAmount && !isNaN(parseFloat(stakeAmount))
                         ? `wager: ${parseFloat(stakeAmount).toLocaleString()} credits (principal completely safe)`
