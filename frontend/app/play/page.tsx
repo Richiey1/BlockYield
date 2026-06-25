@@ -12,9 +12,15 @@ import { useStacks } from "@/contexts/StacksProvider";
 import { useBlockYield } from "@/hooks/useBlockYield";
 import { CONTRACT_NAME, DEPLOYER_ADDRESS, FUNCTION_NAMES } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
-import { uintCV, PostConditionMode, Pc } from "@stacks/transactions";
+import { uintCV, contractPrincipalCV, PostConditionMode, Pc } from "@stacks/transactions";
 import { STACKS_MAINNET } from "@stacks/network";
 import { fetchDynamicRounds } from "./dynamicRounds";
+
+// Strategy principal to pass to deposit-stx / withdraw-stx.
+// When no live mainnet strategy is active the contract's match branch resolves to `true` (no-op),
+// so this value is required by the function signature but is effectively inert until an admin
+// activates a strategy via deploy-yield.
+const MOCK_STRATEGY_PRINCIPAL = { address: DEPLOYER_ADDRESS, name: "mock-yield-strategy" } as const;
 
 interface BlockData {
   height: number;
@@ -152,7 +158,10 @@ export default function PlayDashboard() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: FUNCTION_NAMES.DEPOSIT_STX,
-        functionArgs: [uintCV(microStx)],
+        functionArgs: [
+          uintCV(microStx),
+          contractPrincipalCV(MOCK_STRATEGY_PRINCIPAL.address, MOCK_STRATEGY_PRINCIPAL.name),
+        ],
         postConditions: [
           Pc.principal(address as string).willSendEq(microStx).ustx()
         ],
@@ -191,7 +200,10 @@ export default function PlayDashboard() {
         contractAddress: DEPLOYER_ADDRESS,
         contractName: CONTRACT_NAME,
         functionName: FUNCTION_NAMES.WITHDRAW_STX,
-        functionArgs: [uintCV(microStx)],
+        functionArgs: [
+          uintCV(microStx),
+          contractPrincipalCV(MOCK_STRATEGY_PRINCIPAL.address, MOCK_STRATEGY_PRINCIPAL.name),
+        ],
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
@@ -430,7 +442,7 @@ export default function PlayDashboard() {
                   </div>
                 </div>
                 <div className="self-start sm:self-auto px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
-                  5% APY compounding
+                  0.5% APY compounding
                 </div>
               </div>
 

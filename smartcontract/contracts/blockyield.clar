@@ -1,5 +1,12 @@
 ;; BlockYield - Lossless Yield-Backed Tournament & Competition Engine
-;; V2: Fixed platform-fee bug (fee now applied only on profit) and reserved keyword clash (principal -> curr-principal)
+;; V3: Added yield-strategy-trait dynamic dispatch for real yield routing
+;;     Fixed platform-fee bug (fee now applied only on profit)
+;;     Fixed reserved keyword clash (principal -> curr-principal)
+
+(use-trait yield-strategy-trait .yield-strategy-trait.yield-strategy-trait)
+
+;; Optional active yield strategy - set by admin via deploy-yield
+(define-data-var active-strategy (optional principal) none)
 
 (define-constant ERR-NOT-AUTHORIZED (err u401))
 (define-constant ERR-INVALID-STAKE (err u402))
@@ -201,7 +208,9 @@
 ;; Public Functions
 
 ;; Deposit STX principal into the vault (lossless custody)
-(define-public (deposit-stx (amount uint))
+;; When an active yield strategy is configured, the deposited STX is
+;; forwarded to the strategy contract for yield generation.
+(define-public (deposit-stx (amount uint) (strategy <yield-strategy-trait>))
     (begin
         (asserts! (> amount u0) ERR-INVALID-STAKE)
         ;; 1. Accrue any pending yield first
@@ -210,7 +219,17 @@
         ;; 2. Transfer STX principal to the contract vault
         (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
         
-        ;; 3. Update the vault balance
+        ;; 3. If active strategy matches the passed strategy, route funds to it
+        (match (var-get active-strategy)
+            strat-addr
+            (begin
+                (asserts! (is-eq (contract-of strategy) strat-addr) ERR-NOT-AUTHORIZED)
+                (try! (as-contract (contract-call? strategy deposit amount)))
+            )
+            true
+        )
+        
+        ;; 4. Update the vault balance
         (let
             (
                 (vault-data (default-to { principal-amount: u0, last-yield-block: block-height } (map-get? user-vault tx-sender)))
@@ -225,7 +244,9 @@
 )
 
 ;; Withdraw STX principal from the vault (100% safe custody)
-(define-public (withdraw-stx (amount uint))
+;; When an active yield strategy is configured, STX is first pulled back
+;; from the strategy before returning it to the user.
+(define-public (withdraw-stx (amount uint) (strategy <yield-strategy-trait>))
     (let
         (
             ;; Accrue any pending yield first
@@ -235,6 +256,16 @@
             (recipient tx-sender)
         )
         (asserts! (>= current-principal amount) ERR-INSUFFICIENT-FUNDS)
+        
+        ;; If active strategy matches, pull funds back from it first
+        (match (var-get active-strategy)
+            strat-addr
+            (begin
+                (asserts! (is-eq (contract-of strategy) strat-addr) ERR-NOT-AUTHORIZED)
+                (try! (as-contract (contract-call? strategy withdraw amount)))
+            )
+            true
+        )
         
         ;; Update the vault balance
         (map-set user-vault tx-sender (merge vault-data { principal-amount: (- current-principal amount) }))
@@ -376,6 +407,28 @@
     )
 )
 
+;; Admin: Deploy contract-held STX to an external yield strategy (trait-based dispatch)
+;; This routes the full reserve to a compliant yield strategy contract.
+(define-public (deploy-yield (strategy <yield-strategy-trait>) (amount uint))
+    (begin
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
+        (var-set active-strategy (some (contract-of strategy)))
+        (try! (as-contract (contract-call? strategy deposit amount)))
+        (ok true)
+    )
+)
+
+;; Admin: Unset yield strategy and withdraw all funds back to contract reserve
+(define-public (recall-yield (strategy <yield-strategy-trait>) (amount uint))
+    (begin
+        (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
+        (asserts! (is-eq (some (contract-of strategy)) (var-get active-strategy)) ERR-NOT-AUTHORIZED)
+        (try! (as-contract (contract-call? strategy withdraw amount)))
+        (var-set active-strategy none)
+        (ok true)
+    )
+)
+
 ;; Admin function to fund the contract reserve with STX for yield payouts
 (define-public (fund-yield-reserve (amount uint))
     (begin
@@ -410,6 +463,10 @@
 
 (define-read-only (get-vault-data (user principal))
     (map-get? user-vault user)
+)
+
+(define-read-only (get-active-strategy)
+    (var-get active-strategy)
 )
 
 (define-read-only (get-yield-balance (user principal))

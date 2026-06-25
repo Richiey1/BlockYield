@@ -6,16 +6,22 @@ const deployer = accounts.get("deployer")!;
 const alice = accounts.get("wallet_1")!;
 const bob = accounts.get("wallet_2")!;
 
-describe("BlockYields Lossless Yield Betting Engine", () => {
-  const CONTRACT_NAME = "blockyields";
+// The Clarinet.toml contract name for the main contract
+const CONTRACT_NAME = "blockyield-v3";
+// Mock strategy contract (registered in Clarinet.toml)
+const MOCK_STRATEGY = "mock-yield-strategy";
 
+describe("BlockYields Lossless Yield Betting Engine", () => {
   it("should execute the full lossless yield staking, virtual betting, and withdrawal loop", () => {
     // 1. Initial Deposit (10,000 STX = 10,000,000,000 micro-STX)
     const depositAmount = 10000000000;
     const depositRes = simnet.callPublicFn(
       CONTRACT_NAME,
       "deposit-stx",
-      [Cl.uint(depositAmount)],
+      [
+        Cl.uint(depositAmount),
+        Cl.contractPrincipal(deployer, MOCK_STRATEGY),
+      ],
       alice
     );
     expect(depositRes.result).toBeOk(Cl.bool(true));
@@ -98,7 +104,10 @@ describe("BlockYields Lossless Yield Betting Engine", () => {
     const withdrawRes = simnet.callPublicFn(
       CONTRACT_NAME,
       "withdraw-stx",
-      [Cl.uint(withdrawAmount)],
+      [
+        Cl.uint(withdrawAmount),
+        Cl.contractPrincipal(deployer, MOCK_STRATEGY),
+      ],
       alice
     );
     expect(withdrawRes.result).toBeOk(Cl.bool(true));
