@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   webpack: (config) => {
-    config.externals.push("pino-pretty", "lokijs", "encoding", "pino");
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
   typescript: {
