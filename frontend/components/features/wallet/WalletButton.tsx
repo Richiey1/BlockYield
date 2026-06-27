@@ -4,6 +4,7 @@ import { useMemo, useState, useRef, useEffect } from "react";
 import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 import { Copy, LogOut, Check, ChevronDown, Wallet } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { Button } from "@/components/ui/Button";
 
 type WalletState = ReturnType<typeof useStacksWallet>;
 
@@ -82,43 +83,45 @@ export function WalletButton({ wallet }: Props) {
 
   if (!isMounted) {
     return (
-      <button
+      <Button
         type="button"
         disabled
-        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 text-orange-500/50 border border-orange-500/20 rounded-xl flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase opacity-60"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 bg-zinc-950/80 text-orange-500/50 border border-orange-500/20 rounded-xl flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase opacity-60"
       >
         <span>LOADING...</span>
-      </button>
+      </Button>
     );
   }
 
   if (!isSignedIn) {
     return (
-      <button
+      <Button
         type="button"
         onClick={handleConnect}
         disabled={!isReady}
-        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+        variant="default"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] font-semibold text-xs tracking-wider uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
       >
         <span>{label}</span>
-      </button>
+      </Button>
     );
   }
 
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Connected Wallet Button */}
-      <button
+      <Button
         type="button"
         onClick={toggleDropdown}
-        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 px-5 py-2.5 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] flex items-center justify-center gap-2 font-semibold text-xs tracking-wider uppercase cursor-pointer"
+        variant="default"
+        className="w-full sm:w-auto min-w-[140px] sm:min-w-0 bg-zinc-950/80 hover:bg-orange-500/10 text-orange-500 hover:text-orange-400 border border-orange-500/30 hover:border-orange-500/50 rounded-xl transition-all shadow-[0_0_20px_rgba(249,115,22,0.05)] hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] font-semibold text-xs tracking-wider uppercase cursor-pointer"
       >
         <div className="h-5 w-5 rounded overflow-hidden bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shrink-0">
           <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${address}`} alt="avatar" className="w-full h-full object-cover" />
         </div>
         <span className="text-xs truncate">{label}</span>
         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-250 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-      </button>
+      </Button>
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (

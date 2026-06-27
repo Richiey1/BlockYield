@@ -64,7 +64,7 @@ export default function PlayDashboard() {
   const [redeemAmount, setRedeemAmount] = useState("");
 
   // Transaction Simulation State
-  const [simState, setSimState] = useState<"idle" | "simulating" | "broadcasting" | "confirmed">("idle");
+  const [simState, setSimState] = useState<"idle" | "simulating" | "pending_signature" | "submitted" | "confirming" | "success" | "error" | "rejected">("idle");
   const [simAction, setSimAction] = useState<"deposit" | "withdraw" | "redeem" | "bet">("deposit");
   const [simAmount, setSimAmount] = useState("");
   const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null);
@@ -151,7 +151,7 @@ export default function PlayDashboard() {
   // Execute Deposit to Vault
   async function execDeposit() {
     const microStx = Math.floor(parseFloat(depositAmount) * 1e6);
-    setSimState("broadcasting");
+    setSimState("pending_signature");
     try {
       await openContractCall({
         network: STACKS_MAINNET,
@@ -168,18 +168,25 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
-          setSimState("confirmed");
+          setSimState("submitted");
           setStatusMsg(`Deposit broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
-          setVaultPrincipal(prev => (parseFloat(prev) + parseFloat(depositAmount)).toFixed(4));
-          setStxBalance(prev => (parseFloat(prev) - parseFloat(depositAmount)).toFixed(4));
-          setDepositAmount("");
-          setTimeout(() => setSimState("idle"), 2000);
+          setTimeout(() => {
+            setSimState("confirming");
+            setTimeout(() => {
+              setSimState("success");
+              setVaultPrincipal(prev => (parseFloat(prev) + parseFloat(depositAmount)).toFixed(4));
+              setStxBalance(prev => (parseFloat(prev) - parseFloat(depositAmount)).toFixed(4));
+              setDepositAmount("");
+              setTimeout(() => setSimState("idle"), 2000);
+            }, 3000);
+          }, 1000);
         },
-        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
+        onCancel: () => { setSimState("rejected"); setStatusMsg("Transaction canceled."); setTimeout(() => setSimState("idle"), 2000); }
       });
     } catch (error: any) {
-      setSimState("idle");
+      setSimState("error");
       setStatusMsg(`Deposit error: ${error.message}`);
+      setTimeout(() => setSimState("idle"), 2000);
     }
   }
 
@@ -193,7 +200,7 @@ export default function PlayDashboard() {
   // Execute Withdraw Principal
   async function execWithdraw() {
     const microStx = Math.floor(parseFloat(withdrawAmount) * 1e6);
-    setSimState("broadcasting");
+    setSimState("pending_signature");
     try {
       await openContractCall({
         network: STACKS_MAINNET,
@@ -207,18 +214,25 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
-          setSimState("confirmed");
+          setSimState("submitted");
           setStatusMsg(`Withdrawal broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
-          setVaultPrincipal(prev => (parseFloat(prev) - parseFloat(withdrawAmount)).toFixed(4));
-          setStxBalance(prev => (parseFloat(prev) + parseFloat(withdrawAmount)).toFixed(4));
-          setWithdrawAmount("");
-          setTimeout(() => setSimState("idle"), 2000);
+          setTimeout(() => {
+            setSimState("confirming");
+            setTimeout(() => {
+              setSimState("success");
+              setVaultPrincipal(prev => (parseFloat(prev) - parseFloat(withdrawAmount)).toFixed(4));
+              setStxBalance(prev => (parseFloat(prev) + parseFloat(withdrawAmount)).toFixed(4));
+              setWithdrawAmount("");
+              setTimeout(() => setSimState("idle"), 2000);
+            }, 3000);
+          }, 1000);
         },
-        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
+        onCancel: () => { setSimState("rejected"); setStatusMsg("Transaction canceled."); setTimeout(() => setSimState("idle"), 2000); }
       });
     } catch (error: any) {
-      setSimState("idle");
+      setSimState("error");
       setStatusMsg(`Withdrawal error: ${error.message}`);
+      setTimeout(() => setSimState("idle"), 2000);
     }
   }
 
@@ -232,7 +246,7 @@ export default function PlayDashboard() {
   // Execute Yield Credits Redemption
   async function execRedeemYield() {
     const microStx = Math.floor(parseFloat(redeemAmount) * 1e6);
-    setSimState("broadcasting");
+    setSimState("pending_signature");
     try {
       await openContractCall({
         network: STACKS_MAINNET,
@@ -243,18 +257,25 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
-          setSimState("confirmed");
+          setSimState("submitted");
           setStatusMsg(`Yield redeemed! TxID: ${data.txId.substring(0, 16)}...`);
-          setYieldCredits(prev => (parseFloat(prev) - parseFloat(redeemAmount)).toFixed(8));
-          setStxBalance(prev => (parseFloat(prev) + parseFloat(redeemAmount)).toFixed(4));
-          setRedeemAmount("");
-          setTimeout(() => setSimState("idle"), 2000);
+          setTimeout(() => {
+            setSimState("confirming");
+            setTimeout(() => {
+              setSimState("success");
+              setYieldCredits(prev => (parseFloat(prev) - parseFloat(redeemAmount)).toFixed(8));
+              setStxBalance(prev => (parseFloat(prev) + parseFloat(redeemAmount)).toFixed(4));
+              setRedeemAmount("");
+              setTimeout(() => setSimState("idle"), 2000);
+            }, 3000);
+          }, 1000);
         },
-        onCancel: () => { setSimState("idle"); setStatusMsg("Transaction canceled."); }
+        onCancel: () => { setSimState("rejected"); setStatusMsg("Transaction canceled."); setTimeout(() => setSimState("idle"), 2000); }
       });
     } catch (error: any) {
-      setSimState("idle");
+      setSimState("error");
       setStatusMsg(`Redemption error: ${error.message}`);
+      setTimeout(() => setSimState("idle"), 2000);
     }
   }
 
@@ -269,7 +290,7 @@ export default function PlayDashboard() {
   async function execPlaceStake() {
     if (predictionVal === null) return;
     const microStx = Math.floor(parseFloat(stakeAmount) * 1e6);
-    setSimState("broadcasting");
+    setSimState("pending_signature");
     try {
       await openContractCall({
         network: STACKS_MAINNET,
@@ -280,22 +301,29 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
-          setSimState("confirmed");
+          setSimState("submitted");
           setStatusMsg(`Wager broadcasted! TxID: ${data.txId.substring(0, 16)}...`);
-          setYieldCredits(prev => (parseFloat(prev) - parseFloat(stakeAmount)).toFixed(8));
-          const updated = [...rounds];
-          const round = updated.find(r => r.id === selectedRound);
-          if (round) { round.myStake = { amount: stakeAmount, prediction: predictionVal }; }
-          setRounds(updated);
-          setStakeAmount("");
-          setPredictionVal(null);
-          setTimeout(() => setSimState("idle"), 2000);
+          setTimeout(() => {
+            setSimState("confirming");
+            setTimeout(() => {
+              setSimState("success");
+              setYieldCredits(prev => (parseFloat(prev) - parseFloat(stakeAmount)).toFixed(8));
+              const updated = [...rounds];
+              const round = updated.find(r => r.id === selectedRound);
+              if (round) { round.myStake = { amount: stakeAmount, prediction: predictionVal }; }
+              setRounds(updated);
+              setStakeAmount("");
+              setPredictionVal(null);
+              setTimeout(() => setSimState("idle"), 2000);
+            }, 3000);
+          }, 1000);
         },
-        onCancel: () => { setSimState("idle"); setStatusMsg("Wager canceled."); }
+        onCancel: () => { setSimState("rejected"); setStatusMsg("Wager canceled."); setTimeout(() => setSimState("idle"), 2000); }
       });
     } catch (error: any) {
-      setSimState("idle");
+      setSimState("error");
       setStatusMsg(`Bet error: ${error.message}`);
+      setTimeout(() => setSimState("idle"), 2000);
     }
   }
 
@@ -313,6 +341,7 @@ export default function PlayDashboard() {
       connect();
       return;
     }
+    setSimState("pending_signature");
     setStatusMsg(`Claiming rewards for round #${roundId}...`);
     try {
       await openContractCall({
@@ -324,21 +353,33 @@ export default function PlayDashboard() {
         postConditionMode: PostConditionMode.Deny,
         anchorMode: 3,
         onFinish: (data) => {
+          setSimState("submitted");
           setStatusMsg(`Jackpot claimed successfully! TxID: ${data.txId.substring(0, 16)}...`);
-          const updated = [...rounds];
-          const round = updated.find(r => r.id === roundId);
-          if (round) {
-            round.hasClaimed = true;
-          }
-          setRounds(updated);
-          if (address) fetchBalance();
+          setTimeout(() => {
+            setSimState("confirming");
+            setTimeout(() => {
+              setSimState("success");
+              const updated = [...rounds];
+              const round = updated.find(r => r.id === roundId);
+              if (round) {
+                round.hasClaimed = true;
+              }
+              setRounds(updated);
+              if (address) fetchBalance();
+              setTimeout(() => setSimState("idle"), 2000);
+            }, 3000);
+          }, 1000);
         },
         onCancel: () => {
+          setSimState("rejected");
           setStatusMsg("Claim canceled.");
+          setTimeout(() => setSimState("idle"), 2000);
         }
       });
     } catch (err: any) {
+      setSimState("error");
       setStatusMsg(`Claim error: ${err.message}`);
+      setTimeout(() => setSimState("idle"), 2000);
     }
   }
 
@@ -937,22 +978,58 @@ export default function PlayDashboard() {
                   </div>
                 </>
               )}
-              {simState === "broadcasting" && (
+              {simState === "pending_signature" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6">
+                    <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-white">Pending Signature</h2>
+                  <p className="text-sm text-zinc-400">Please sign the transaction in your wallet...</p>
+                </>
+              )}
+              {simState === "submitted" && (
                 <>
                   <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6">
                     <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
                   </div>
                   <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-white">Broadcasting</h2>
-                  <p className="text-sm text-zinc-400">Awaiting wallet signature and submitting to Stacks network...</p>
+                  <p className="text-sm text-zinc-400">Transaction submitted. Waiting for network...</p>
                 </>
               )}
-              {simState === "confirmed" && (
+              {simState === "confirming" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6">
+                    <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-blue-400">Confirming</h2>
+                  <p className="text-sm text-zinc-400">Waiting for block confirmation...</p>
+                </>
+              )}
+              {simState === "success" && (
                 <>
                   <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
                     <CheckCircle className="w-8 h-8 text-green-400" />
                   </div>
                   <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-green-400">Confirmed!</h2>
-                  <p className="text-sm text-zinc-400">Your transaction was broadcast to the Stacks network.</p>
+                  <p className="text-sm text-zinc-400">Your transaction was confirmed on the network.</p>
+                </>
+              )}
+              {simState === "error" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
+                    <AlertTriangle className="w-8 h-8 text-red-500" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-red-500">Error</h2>
+                  <p className="text-sm text-zinc-400">There was an error processing the transaction.</p>
+                </>
+              )}
+              {simState === "rejected" && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
+                    <AlertTriangle className="w-8 h-8 text-red-500" />
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-widest mb-2 text-red-500">Rejected</h2>
+                  <p className="text-sm text-zinc-400">You rejected the transaction.</p>
                 </>
               )}
             </div>
