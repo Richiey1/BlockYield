@@ -6,7 +6,7 @@ import {
   CONTRACT_NAME as CONF_CONTRACT_NAME,
   APP_NAME as CONF_APP_NAME,
   APP_ICON as CONF_APP_ICON
-} from '@/config/constants';
+} from '@/lib/constants/contracts';
 
 // Network configuration
 export const NETWORK = CONF_NETWORK === 'mainnet' 

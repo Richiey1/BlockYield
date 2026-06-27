@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link';
-import { WalletButton } from '@/components/WalletButton';
-import { WalletConnectButton } from '@/components/WalletConnectButton';
+import { WalletButton } from '@/components/features/wallet/WalletButton';
+import { WalletConnectButton } from '@/components/features/wallet/WalletConnectButton';
 import { Grid3x3 } from 'lucide-react';
 
 export function Navbar() {

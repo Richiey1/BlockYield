@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { useStacksWallet } from "@/hooks/useStacksWallet";
+import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 import { Copy, LogOut, Check, ChevronDown, Wallet } from "lucide-react";
 import { toast } from "react-hot-toast";
 

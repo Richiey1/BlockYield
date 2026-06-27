@@ -1,4 +1,4 @@
-import type { Network } from "@/hooks/useStacksWallet";
+import type { Network } from '@/lib/hooks/useStacksWallet';
 
 const styles: Record<
   Network,

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { navItems } from "@/lib/navigation";
 
-import { useStacksWallet } from "@/hooks/useStacksWallet";
+import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 import { ADMIN_WALLETS } from "@/lib/constants/contracts";
 
 export function NavLinks() {

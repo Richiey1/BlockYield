@@ -9,7 +9,7 @@ import {
   AlertTriangle, Loader2, ChevronDown, ChevronUp
 } from "lucide-react";
 import { useStacks } from "@/contexts/StacksProvider";
-import { useBlockYield } from "@/hooks/useBlockYield";
+import { useBlockYield } from '@/lib/hooks/useBlockYield';
 import { CONTRACT_NAME, DEPLOYER_ADDRESS, FUNCTION_NAMES } from "@/lib/constants/contracts";
 import { openContractCall } from "@stacks/connect";
 import { uintCV, contractPrincipalCV, PostConditionMode, Pc } from "@stacks/transactions";

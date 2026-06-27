@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Gamepad2, Globe, Coins, Grid3x3, Crown, TrendingUp, Plus } from "lucide-react";
-import { TabType } from "@/components/common/TabNavigation";
+import { TabType } from '@/components/features/navigation/TabNavigation';
 
 interface HeroCarouselProps {
   onTabChange: (tab: TabType) => void;

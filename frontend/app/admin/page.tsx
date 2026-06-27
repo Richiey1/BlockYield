@@ -3,7 +3,7 @@
 import { ShieldAlert, ShieldCheck, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStacksWallet } from "@/hooks/useStacksWallet";
+import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 import { ADMIN_WALLETS, DEPLOYER_ADDRESS } from "@/lib/constants/contracts";
 
 export default function AdminPage() {

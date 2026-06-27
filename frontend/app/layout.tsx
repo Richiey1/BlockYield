@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Mono, Inter } from "next/font/google";
 import { StacksProvider } from "@/contexts/StacksProvider";
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from '@/components/features/navigation/CommonNavbar';
 import { GameToaster } from "@/components/ui/Toast";
-import OnboardingTour from "@/components/onboarding/OnboardingTour";
-import { Providers } from "@/components/Providers";
+import OnboardingTour from "@/components/features/onboarding/OnboardingTour";
+import { Providers } from '@/components/providers/Providers';
 import { ReownProvider } from "@/contexts/ReownProvider";
 import "./globals.css";
 

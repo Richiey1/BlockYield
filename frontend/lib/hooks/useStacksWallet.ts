@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showConnect } from "@stacks/connect";
 import { appDetails, userSession } from "@/lib/stacks-session";
-import { STACKS_NETWORK } from "@/config/constants";
+import { STACKS_NETWORK } from "@/lib/constants/contracts";
 
 type StacksUserData = {
   profile?: {

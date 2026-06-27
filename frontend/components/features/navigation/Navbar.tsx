@@ -1,10 +1,10 @@
 "use client";
 
-import { Logo } from "@/components/Logo";
-import { NavLinks } from "@/components/NavLinks";
-import { NetworkBadge } from "@/components/NetworkBadge";
-import { WalletButton } from "@/components/WalletButton";
-import { useStacksWallet } from "@/hooks/useStacksWallet";
+import { Logo } from '@/components/features/core/Logo';
+import { NavLinks } from '@/components/features/navigation/NavLinks';
+import { NetworkBadge } from '@/components/features/core/NetworkBadge';
+import { WalletButton } from '@/components/features/wallet/WalletButton';
+import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 
 export function Navbar() {
   const wallet = useStacksWallet();
