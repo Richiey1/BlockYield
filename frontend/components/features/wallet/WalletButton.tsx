@@ -4,7 +4,7 @@ import { useMemo, useState, useRef, useEffect } from "react";
 import { useStacksWallet } from '@/lib/hooks/useStacksWallet';
 import { Copy, LogOut, Check, ChevronDown, Wallet } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type WalletState = ReturnType<typeof useStacksWallet>;
 

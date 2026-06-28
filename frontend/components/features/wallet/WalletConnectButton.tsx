@@ -2,12 +2,13 @@
 
 import { useReown } from "@/contexts/ReownProvider";
 import { Smartphone } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function WalletConnectButton() {
   const { open, isConnected, address } = useReown();
 
   return (
-    <button
+    <Button
       onClick={() => open()}
       className="btn-retro flex items-center gap-2"
     >
@@ -17,6 +18,6 @@ export function WalletConnectButton() {
           ? `${address.slice(0, 6)}...${address.slice(-4)}`
           : "MOBILE WALLET"}
       </span>
-    </button>
+    </Button>
   );
 }
