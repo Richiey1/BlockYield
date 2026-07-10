@@ -1,57 +1,29 @@
-# 🟠 BlockYield
+# BlockYield
 
-**Predict the Chain, Not the Market**
+> **The first lossless prediction game on Bitcoin's smart contract layer.**
 
-BlockYield is a real-time on-chain prediction game built on Stacks. It allows users to stake STX on verifiable blockchain outcomes — such as block size, transaction count, and network activity — with automatic resolution and trustless reward distribution.
-
----
-
-## ⚡ Vision
-
-Transforming passive blockchain observation into an interactive financial experience. BlockYield turns the "heartbeat" of the Stacks network into a playable, deterministic game.
-
-## ⚙️ Core Mechanics
-
-- **Blockchain Pulse**: Predict the characteristics of the upcoming blocks.
-- **On-Chain Verifiability**: Every outcome is resolved directly from the blockchain state — no external oracles required for core modes.
-- **Pooled Stakes**: Stake STX and share the rewards proportionally with other winners.
-- **Rapid Resolution**: Short cycles (1-5 minutes) for immediate feedback and high engagement.
-
-## 🛠 Tech Stack
-
-- **Smart Contracts**: Clarity (Stacks L2)
-- **Frontend**: Next.js 15, Tailwind CSS, Framer Motion
-- **Design**: Premium Industrial / High-Impact UI
-- **Wallet Integration**: Hiro / Leather / Xverse
-
-## 📂 Project Structure
-
-```bash
-├── frontend          # Next.js Prediction Dashboard
-├── smartcontract     # Clarity contracts (Market, Stakes, Resolver)
-└── PRD.md            # Detailed product strategy
-```
-
-## 🚥 Quick Start
-
-### Smart Contracts
-```bash
-cd smartcontract
-clarinet check
-```
-
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## 📜 License
-
-MIT
-
+[![Stacks](https://img.shields.io/badge/Stacks-L2-blue)](https://stacks.co)
+[![Bitcoin](https://img.shields.io/badge/Secured_by-Bitcoin-orange)](https://bitcoin.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-*Maintenance note: This repository is actively maintained.*
+## The Problem
+Prediction markets and GameFi often require users to risk their principal, leading to significant downside risk. At the same time, holding STX for passive PoX yield can be uneventful. There is a missing link that combines the excitement of gaming and prediction markets with the safety of principal-protected DeFi.
+
+## The Solution
+Stake STX, keep 100% of your principal, and compete for real DeFi yield with zero downside risk. **BlockYield** transforms passive blockchain observation into an interactive financial experience. It gamifies DeFi yield, explicitly encouraging user onboarding by providing a risk-free yield gaming experience. 
+
+## How it Works
+1. **Stake STX**: Deposit your STX into the smart contract. Your principal is 100% protected.
+2. **Accrue Yield**: As blocks pass, your staked STX generates PoX yield credits (now integrated with real DeFi yield traits like Arkadiko).
+3. **Play the Game**: Use your accrued yield credits to wager on blockchain prediction outcomes (such as BTC price). 
+4. **Win or Keep Trying**: Winners take the pooled yield rewards, while losers only lose their yield credits — their original STX principal remains completely safe and can be withdrawn at any time.
+
+## Live Contract Links (Stacks Mainnet)
+- **BlockYield v3**: [`SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.blockyield-v3`](https://explorer.stacks.co/txid/SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.blockyield-v3?chain=mainnet)
+
+## Roadmap
+- **Phase 1 (Live)**: Lossless principal guarantee, yield credit accrual, and prediction mechanic integration. Upgraded with `yield-strategy-trait.clar` modular dispatch.
+- **Phase 2 (Next)**: Replace generic prediction mechanics with a BTC price oracle prediction (Chainlink/Redstone). Upgrade yield accrual logic to use Clarity 4 / Nakamoto's `stacks-block-time` instead of block-height.
+- **Phase 3 (Future)**: Security audit, full real yield integrations natively on frontend, and comprehensive analytics dashboard.
