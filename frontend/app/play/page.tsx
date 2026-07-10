@@ -20,7 +20,7 @@ import { fetchDynamicRounds } from "./dynamicRounds";
 // When no live mainnet strategy is active the contract's match branch resolves to `true` (no-op),
 // so this value is required by the function signature but is effectively inert until an admin
 // activates a strategy via deploy-yield.
-const MOCK_STRATEGY_PRINCIPAL = { address: DEPLOYER_ADDRESS, name: "mock-yield-strategy" } as const;
+const MOCK_STRATEGY_PRINCIPAL = { address: "SP2C2YFP12AJZB4MABJEJ6QQFTXWQVNZ8SYWPWHF", name: "arkadiko-stx-reserve-v2-1" } as const;
 
 interface BlockData {
   height: number;
