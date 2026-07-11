@@ -7,18 +7,18 @@ cache_dir = './.cache'
 
 [contracts.yield-strategy-trait]
 path = 'contracts/yield-strategy-trait.clar'
-clarity_version = 2
-epoch = '2.5'
+clarity_version = 4
+epoch = '3.3'
 
 [contracts.mock-yield-strategy]
 path = 'contracts/mock-yield-strategy.clar'
-clarity_version = 2
-epoch = '2.5'
+clarity_version = 4
+epoch = '3.3'
 
 [contracts.blockyield-v3]
 path = 'contracts/blockyield.clar'
-clarity_version = 2
-epoch = '2.5'
+clarity_version = 4
+epoch = '3.3'
 
 [repl.analysis]
 passes = ['check_checker']
