@@ -123,7 +123,7 @@
     )
 )
 (define-data-var platform-fee-percent uint u2) ;; 2% protocol fee
-(define-data-var yield-rate-per-block uint u95) ;; Simulated ~0.5% APY (95/1B scale * 52,560 blocks/yr ~= 0.5%)
+(define-data-var yield-rate-per-second uint u95) ;; Simulated ~0.5% APY
 (define-data-var yield-precision-scale uint u1000000000) ;; 1,000,000,000 scaling factor
 
 ;; Vault Balances: Tracks principal deposits and last yield accrual block
@@ -131,7 +131,7 @@
     principal
     {
         principal-amount: uint,
-        last-yield-block: uint
+        last-yield-time: uint
     }
 )
 
@@ -170,16 +170,16 @@
 (define-private (calculate-pending-yield (user principal))
     (let
         (
-            (vault-data (default-to { principal-amount: u0, last-yield-block: block-height } (map-get? user-vault user)))
+            (vault-data (default-to { principal-amount: u0, last-yield-time: stacks-block-time } (map-get? user-vault user)))
             (curr-principal (get principal-amount vault-data))
-            (last-block (get last-yield-block vault-data))
+            (last-time (get last-yield-time vault-data))
         )
-        (if (or (is-eq curr-principal u0) (>= last-block block-height))
+        (if (or (is-eq curr-principal u0) (>= last-time stacks-block-time))
             u0
             (let
                 (
-                    (blocks-elapsed (- block-height last-block))
-                    (accrued (/ (* (* curr-principal blocks-elapsed) (var-get yield-rate-per-block)) (var-get yield-precision-scale)))
+                    (seconds-elapsed (- stacks-block-time last-time))
+                    (accrued (/ (* (* curr-principal seconds-elapsed) (var-get yield-rate-per-second)) (var-get yield-precision-scale)))
                 )
                 accrued
             )
@@ -193,7 +193,7 @@
         (
             (pending (calculate-pending-yield user))
             (current-credits (default-to u0 (map-get? user-yield-credits user)))
-            (vault-data (default-to { principal-amount: u0, last-yield-block: block-height } (map-get? user-vault user)))
+            (vault-data (default-to { principal-amount: u0, last-yield-time: stacks-block-time } (map-get? user-vault user)))
         )
         ;; Add pending yield to user's credits
         (if (> pending u0)
@@ -201,7 +201,7 @@
             true
         )
         ;; Update last update block height while preserving principal
-        (map-set user-vault user (merge vault-data { last-yield-block: block-height }))
+        (map-set user-vault user (merge vault-data { last-yield-time: stacks-block-time }))
     )
 )
 
@@ -232,11 +232,11 @@
         ;; 4. Update the vault balance
         (let
             (
-                (vault-data (default-to { principal-amount: u0, last-yield-block: block-height } (map-get? user-vault tx-sender)))
+                (vault-data (default-to { principal-amount: u0, last-yield-time: stacks-block-time } (map-get? user-vault tx-sender)))
             )
             (map-set user-vault tx-sender {
                 principal-amount: (+ (get principal-amount vault-data) amount),
-                last-yield-block: block-height
+                last-yield-time: stacks-block-time
             })
         )
         (ok true)
@@ -442,7 +442,7 @@
 (define-public (set-yield-rate (new-rate uint))
     (begin
         (asserts! (is-admin tx-sender) ERR-NOT-AUTHORIZED)
-        (var-set yield-rate-per-block new-rate)
+        (var-set yield-rate-per-second new-rate)
         (ok true)
     )
 )
